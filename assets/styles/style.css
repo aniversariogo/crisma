@@ -305,7 +305,6 @@ menu>button {
 }
 
 .btn-theme {
-    z-index: -1;
     cursor: pointer;
     position: absolute;
     top: 10px;
