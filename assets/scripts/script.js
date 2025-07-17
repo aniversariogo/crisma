@@ -632,7 +632,7 @@
   // --- Lógica para o tema persistente ---
   document.addEventListener('DOMContentLoaded', () => {
     let themeButton = document.getElementById('theme');
-    let elementosParaAlterar = document.querySelectorAll('a, body, label, th, td, .titulo, .tr-1, .tr-2, .td2, .circle, .moon-icon, .sun-icon, .encont-label, #crismandoFormDialog, #formDialog, #dataPreview, #faltasList, .modal-content, .close-button');
+    let elementosParaAlterar = document.querySelectorAll('a, body, label, th, td, .titulo, .tr-1, .tr-2, .td2, .circle, .moon-icon, .sun-icon, .encont-label, .logo-capela, #crismandoFormDialog, #formDialog, #dataPreview, #faltasList, .modal-content, .close-button');
 
     const savedTheme = localStorage.getItem('themePreference');
 
