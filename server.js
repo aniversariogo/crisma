@@ -398,7 +398,7 @@ app.get('/api/report/pdf', async (req, res) => {
                 .text(`${encontros.length}`).moveDown();
 
             encontros.forEach((encontro) => {
-                const dataFormatada = new Date(encontro.data).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: ', 2-digit', minute: '2-digit' });
+                const dataFormatada = new Date(encontro.data).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
                 doc.font('Helvetica-Bold')
                     .fontSize(12)
                     .text(`Assunto: `, { continued: true }); 
