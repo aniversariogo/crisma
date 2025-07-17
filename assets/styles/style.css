@@ -370,6 +370,7 @@ menu>button {
 }
 
 .logo-capela {
+    display: none;
     margin-top: 20px;
     position: relative;
     bottom: 0px;
@@ -504,6 +505,7 @@ td {
 
 #generateReportBtn {
     margin-top: 20px;
+    margin-bottom: 30px;
     padding-right: 15px;
 
     border: none;
@@ -702,6 +704,10 @@ td {
 
 .modal-content.dark h2 {
     color: #eee;
+}
+
+.logo-capela.dark {
+    display: block;
 }
 
 @media screen and (max-width: 768px) {
