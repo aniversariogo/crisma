@@ -540,7 +540,7 @@ td {
     /* Escondido por padrão */
     position: fixed;
     /* Fica por cima de tudo */
-    z-index: 1;
+    z-index: 10000;
     /* Z-index alto para ficar na frente */
     left: 0;
     top: 0;
