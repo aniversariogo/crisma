@@ -628,14 +628,11 @@ td {
 #faltasDetailsModal .modal-content {
     /* Pode usar os mesmos estilos do .modal-content ou personalizar */
     padding: 30px;
+    max-width: 80%;
 }
 
 #faltasDetailsModal h2 {
     margin-bottom: 25px;
-}
-
-#faltasDetailsModal {
-    width: 80%;
 }
 
 #faltasList {
