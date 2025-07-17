@@ -742,4 +742,8 @@ td {
     .sect-encont {
         margin-top: 50px;
     }
+    
+    .btn-theme {
+        z-index: -1;
+    }
 }
