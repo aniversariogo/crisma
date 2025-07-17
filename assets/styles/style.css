@@ -634,6 +634,9 @@ td {
     margin-bottom: 25px;
 }
 
+#faltasDetailsModal {
+    width: 80%;
+}
 
 #faltasList {
     max-height: 300px; /* Limita a altura da lista de faltas */
