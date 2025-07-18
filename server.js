@@ -473,9 +473,13 @@ app.get('/api/report/pdf', async (req, res) => {
 
                 const faltasDoAluno = faltasPorCrismando[aluno.id] || [];
                 if (faltasDoAluno.length > 0) {
+                    doc.font('Helvetica')
+                        .fontSize(11)
+                        .text(`   `, { continued: true });
+                    
                     doc.font('Helvetica-BoldOblique')
                         .fontSize(11)
-                        .text('   Detalhes das Faltas:', { underline: true }).moveDown(0.2);
+                        .text('Detalhes das Faltas:', { underline: true }).moveDown(0.2);
 
                     faltasDoAluno.forEach(falta => {
                         const dataFaltaFormatada = new Date(falta.data).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
