@@ -175,6 +175,10 @@ button.icon {
     /* Indica que é clicável */
 }
 
+#novoEncontroBtn {
+    z-index: 10;
+}
+
 /* NOVO: Contêiner para a tabela de encontros para rolagem */
 .table-container {
     overflow-x: auto;
