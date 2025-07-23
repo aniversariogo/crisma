@@ -958,11 +958,6 @@ td {
     transition: 0.3s ease;
 }
 
-/* Estilos para tema escuro, se aplicável (já existente, mas reconfirmado) */
-.toggle-password-icon.dark {
-    filter: invert(1); /* Inverte a cor do ícone para o tema escuro, se o ícone for preto */
-}
-
 @media screen and (max-width: 768px) {
     #generateReportBtn {
         margin-bottom: 20px;
