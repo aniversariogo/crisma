@@ -43,7 +43,7 @@ db.connect()
 
 // ---------- Credenciais de Login (SIMPLES) ----------
 const USERS = {
-    'crisma2025cnsa': 'cnsa202526crisma',
+    'crismacapela25': '202526crisma',
     'crisma2025mnsp': 'mnsp202526crisma'
 };
 
