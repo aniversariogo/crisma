@@ -362,6 +362,15 @@ app.get('/api/report/pdf', async (req, res) => {
         const alunos = alunosResult.rows;
         const encontros = encontrosResult.rows;
 
+        const dataGeracaoRelatorioFormatada = new Date().toLocaleDateString('pt-BR', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            timeZone: 'America/Sao_Paulo'
+        });
+
         // Buscar as faltas específicas para cada crismando
         const faltasDetalhesResult = await db.query(`
             SELECT
@@ -391,19 +400,10 @@ app.get('/api/report/pdf', async (req, res) => {
 
         // Configurar cabeçalhos da resposta para download do PDF
         res.setHeader('Content-Type', 'application/pdf');
-        res.setHeader('Content-Disposition', 'attachment; filename="relatorio_crisma.pdf"');
+        res.setHeader('Content-Disposition', 'attachment; filename="relatorio_crisma.pdf" + ${dataGeracaoRelatorioFormatada}');
 
         // 3. Enviar o PDF gerado diretamente para o cliente
         doc.pipe(res);
-
-        const dataGeracaoRelatorioFormatada = new Date().toLocaleDateString('pt-BR', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-            timeZone: 'America/Sao_Paulo'
-        });
 
         // 4. Adicionar conteúdo ao PDF
         doc.font('Helvetica-Bold')
