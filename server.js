@@ -371,15 +371,6 @@ app.get('/api/report/pdf', async (req, res) => {
             timeZone: 'America/Sao_Paulo'
         });
 
-        // Formata a data e hora para o nome do arquivo (sem caracteres especiais)
-        const now = new Date();
-        const year = now.getFullYear();
-        const month = String(now.getMonth() + 1).padStart(2, '0'); // Mês começa do 0
-        const day = String(now.getDate()).padStart(2, '0');
-        const hours = String(now.getHours()).padStart(2, '0');
-        const minutes = String(now.getMinutes()).padStart(2, '0');
-        const filenameDate = `${year}-${month}-${day}_${hours}-${minutes}`;
-
         // Buscar as faltas específicas para cada crismando
         const faltasDetalhesResult = await db.query(`
             SELECT
@@ -407,9 +398,20 @@ app.get('/api/report/pdf', async (req, res) => {
         // 2. Criar um novo documento PDF
         const doc = new PDFDocument({ margin: 50 });
 
+        // Formata a data e hora para o nome do arquivo (sem caracteres especiais)
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0'); // Mês começa do 0
+        const day = String(now.getDate()).padStart(2, '0');
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const filenameDate = `${year}-${month}-${day}_${hours}-${minutes}`;
+
+        const filename = `relatorio_crisma_${filenameDate}.pdf`;
+
         // Configurar cabeçalhos da resposta para download do PDF
         res.setHeader('Content-Type', 'application/pdf');
-        res.setHeader('Content-Disposition', `attachment; filename="relatorio_crisma_${filenameDate}.pdf"`);
+        res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
 
         // 3. Enviar o PDF gerado diretamente para o cliente
         doc.pipe(res);
