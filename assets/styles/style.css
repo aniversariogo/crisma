@@ -173,6 +173,7 @@ button.icon {
     /* Garante que não tenha borda padrão */
     cursor: pointer;
     /* Indica que é clicável */
+    z-index: 10000;
 }
 
 /* NOVO: Contêiner para a tabela de encontros para rolagem */
