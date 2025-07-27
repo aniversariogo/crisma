@@ -966,6 +966,10 @@ td {
     }
     */
     
+    main {
+        width: 95%;
+    }
+    
     #generateReportBtn {
         margin-bottom: 20px;
     }
