@@ -960,9 +960,11 @@ td {
 }
 
 @media screen and (max-width: 768px) {
+    /*
     table {
         width: 105%;
     }
+    */
     
     #generateReportBtn {
         margin-bottom: 20px;
