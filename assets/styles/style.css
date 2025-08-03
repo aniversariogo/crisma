@@ -985,10 +985,10 @@ td {
 
     #novoEncontroBtn,
     #novoCrismandoBtn {
-        padding: 3px 10px;
+        padding: 2.5px 10px;
         position: fixed;
         right: 10px;
-        bottom: -9px;
+        bottom: -7px;
     }
 
     article {
