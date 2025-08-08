@@ -747,6 +747,8 @@
     let elementosParaAlterar = document.querySelectorAll('a, body, label, th, td, .titulo, .tr-1, .tr-2, .td2, .circle, .moon-icon, .sun-icon, .encont-label, .logo-capela, #crismandoFormDialog, #formDialog, #dataPreview, #faltasList, .modal-content, .close-button, .h2-login, .toggle-password-icon');
 
     let arrowIcon = document.getElementById('arrowIcon');
+    
+    let logoCapela = document.getElementById('logoCapela');
 
     const savedTheme = localStorage.getItem('themePreference');
 
@@ -774,10 +776,14 @@
         localStorage.setItem('themePreference', 'dark');
 
         if (arrowIcon) arrowIcon.src = arrowIcon.src.replace("arrow-dark-icon.svg", "arrow-light-icon.svg");
+        
+        if (logoCapela) logoCapela.src = logoCapela.src.replace("capela-dark.PNG", "logo-capela.png");
       } else {
         localStorage.setItem('themePreference', 'light');
         
         if (arrowIcon) arrowIcon.src = arrowIcon.src.replace("arrow-light-icon.svg", "arrow-dark-icon.svg");
+        
+        if (logoCapela) logoCapela.src = logoCapela.src.replace("logo-capela.png", "capela-dark.PNG");
       }
     });
   });
