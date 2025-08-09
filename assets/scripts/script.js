@@ -743,48 +743,125 @@
 
   // --- Lógica para o tema persistente ---
   document.addEventListener('DOMContentLoaded', () => {
-    let themeButton = document.getElementById('theme');
-    let elementosParaAlterar = document.querySelectorAll('a, body, label, th, td, .titulo, .tr-1, .tr-2, .td2, .circle, .moon-icon, .sun-icon, .encont-label, .logo-capela, #crismandoFormDialog, #formDialog, #dataPreview, #faltasList, .modal-content, .close-button, .h2-login, .toggle-password-icon');
+    // Seleciona os elementos essenciais uma única vez para melhor performance
+    const themeButton = document.getElementById('theme');
+    const arrowIcon = document.getElementById('arrowIcon');
+    const logoCapela = document.getElementById('logoCapela');
 
-    let arrowIcon = document.getElementById('arrowIcon');
-    
-    let logoCapela = document.getElementById('logoCapela');
+    // Seleciona todos os outros elementos que precisam ter a classe 'dark' alternada
+    const elementosParaAlterar = document.querySelectorAll(
+        'a, body, label, th, td, .titulo, .tr-1, .tr-2, .td2, .circle, ' +
+        '.moon-icon, .sun-icon, .encont-label, #crismandoFormDialog, #formDialog, ' +
+        '#dataPreview, #faltasList, .modal-content, .close-button, .h2-login, .toggle-password-icon'
+    );
 
-    const savedTheme = localStorage.getItem('themePreference');
+    // --- Caminhos para as imagens ---
+    const imagens = {
+        light: {
+            arrow: '/assets/images/icons/arrow-dark-icon.svg', // Imagem para fundo claro
+            logo: '/assets/images/capela-dark.png'      // Imagem para fundo claro
+        },
+        dark: {
+            arrow: '/assets/images/icons/arrow-light-icon.svg', // Imagem para fundo escuro
+            logo: '/assets/images/logo-capela.png'    // Imagem para fundo escuro
+        }
+    };
 
-    if (savedTheme === 'dark') {
-      themeButton.classList.add('dark');
-      elementosParaAlterar.forEach(elemento => {
-        elemento.classList.add('dark');
-      });
+    /**
+     * Função centralizada para aplicar o tema (claro ou escuro) na página.
+     * Esta é a única função responsável por todas as alterações visuais.
+     * @param {string} tema - O tema a ser aplicado ('light' ou 'dark').
+     */
+    const aplicarTema = (tema) => {
+        // Adiciona ou remove a classe 'dark' de todos os elementos necessários.
+        // O segundo argumento de 'toggle' força o estado: true para adicionar, false para remover.
+        const ehDark = tema === 'dark';
+        elementosParaAlterar.forEach(elemento => {
+            elemento.classList.toggle('dark', ehDark);
+        });
 
+        // Troca as imagens com base no tema, de forma segura
+        if (arrowIcon) {
+            arrowIcon.src = ehDark ? imagens.dark.arrow : imagens.light.arrow;
+        }
+        if (logoCapela) {
+            logoCapela.src = ehDark ? imagens.dark.logo : imagens.light.logo;
+        }
 
-    } else {
-      themeButton.classList.remove('dark');
-      elementosParaAlterar.forEach(elemento => {
-        elemento.classList.remove('dark');
-      });
-    }
+        // Bônus: Atualiza o atributo no body para estilização via CSS, se necessário
+        document.body.setAttribute('data-theme', tema);
+    };
 
+    /**
+     * Lógica do clique no botão de tema.
+     */
     themeButton.addEventListener('click', () => {
-      themeButton.classList.toggle('dark');
-      elementosParaAlterar.forEach(elemento => {
-        elemento.classList.toggle('dark');
-      });
+        // Verifica qual é o tema atual lendo o atributo do body ou o localStorage
+        const temaAtual = localStorage.getItem('themePreference') || 'light';
+        const novoTema = temaAtual === 'dark' ? 'light' : 'dark';
 
-      if (themeButton.classList.contains('dark')) {
-        localStorage.setItem('themePreference', 'dark');
+        // Salva a nova preferência no localStorage para persistir entre as sessões
+        localStorage.setItem('themePreference', novoTema);
 
-        if (arrowIcon) arrowIcon.src = arrowIcon.src.replace("arrow-dark-icon.svg", "arrow-light-icon.svg");
-        
-        if (logoCapela) logoCapela.src = logoCapela.src.replace("capela-dark.PNG", "logo-capela.png");
-      } else {
-        localStorage.setItem('themePreference', 'light');
-        
-        if (arrowIcon) arrowIcon.src = arrowIcon.src.replace("arrow-light-icon.svg", "arrow-dark-icon.svg");
-        
-        if (logoCapela) logoCapela.src = logoCapela.src.replace("logo-capela.png", "capela-dark.PNG");
-      }
+        // Aplica o novo tema visualmente
+        aplicarTema(novoTema);
     });
-  });
+
+    /**
+     * Lógica de Carregamento Inicial.
+     * Executa assim que a página é carregada para aplicar o tema salvo.
+     */
+    const inicializarTema = () => {
+        // Pega o tema salvo pelo usuário, ou usa 'light' como padrão
+        const temaSalvo = localStorage.getItem('themePreference') || 'light';
+        aplicarTema(temaSalvo);
+    };
+
+    // Inicia o tema da página
+    inicializarTema();
+});
+
+
+  // document.addEventListener('DOMContentLoaded', () => {
+  //   let themeButton = document.getElementById('theme');
+  //   let elementosParaAlterar = document.querySelectorAll('a, body, label, th, td, .titulo, .tr-1, .tr-2, .td2, .circle, .moon-icon, .sun-icon, .encont-label, .logo-capela, #crismandoFormDialog, #formDialog, #dataPreview, #faltasList, .modal-content, .close-button, .h2-login, .toggle-password-icon');
+
+  //   let arrowIcon = document.getElementById('arrowIcon');
+  //   let logoCapela = document.getElementById('logoCapela');
+
+  //   const savedTheme = localStorage.getItem('themePreference');
+
+  //   if (savedTheme === 'dark') {
+  //     themeButton.classList.add('dark');
+  //     elementosParaAlterar.forEach(elemento => {
+  //       elemento.classList.add('dark');
+  //     });
+
+
+  //   } else {
+  //     themeButton.classList.remove('dark');
+  //     elementosParaAlterar.forEach(elemento => {
+  //       elemento.classList.remove('dark');
+  //     });
+  //   }
+
+  //   themeButton.addEventListener('click', () => {
+  //     themeButton.classList.toggle('dark');
+  //     elementosParaAlterar.forEach(elemento => {
+  //       elemento.classList.toggle('dark');
+  //     });
+
+  //     if (themeButton.classList.contains('dark')) {
+  //       localStorage.setItem('themePreference', 'dark');
+
+  //       if (arrowIcon) arrowIcon.src = arrowIcon.src.replace("arrow-dark-icon.svg", "arrow-light-icon.svg");
+  //       if (logoCapela) logoCapela.src = logoCapela.src.replace("capela-dark.png", "logo-capela.png");
+  //     } else {
+  //       localStorage.setItem('themePreference', 'light');
+        
+  //       if (arrowIcon) arrowIcon.src = arrowIcon.src.replace("arrow-light-icon.svg", "arrow-dark-icon.svg");
+  //       if (logoCapela) logoCapela.src = logoCapela.src.replace("logo-capela.png", "capela-dark.png");
+  //     }
+  //   });
+  // });
 })();
