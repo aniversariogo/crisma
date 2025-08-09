@@ -81,7 +81,10 @@ td {
     /* NOVO: Borda para células */
     padding: 8px;
     /* Ajuste o padding se necessário */
+
     word-wrap: break-word;
+    /* word-wrap: nowrap; */
+
     /* Quebra palavras longas */
     font-size: 14px;
     /* NOVO: Diminuído o tamanho da fonte para as células */
@@ -371,10 +374,10 @@ menu>button {
 }
 
 .logo-capela {
-    display: none;
+    display: block;
     margin-top: 20px;
     position: relative;
-    bottom: 0px;
+    bottom: 20px;
     width: 300px;
     height: auto;
 }
@@ -899,6 +902,20 @@ td {
     color: #aaa;
 }
 
+.circle-login.dark {
+    transition: 0.3s ease-in-out;
+    background-color: rgb(255, 255, 255);
+    top: 2.3px;
+    left: 45px;
+}
+
+body.dark .btn-theme {
+    background-image: url('/assets/images/ceu-dark.jpg');
+    background-position: bottom center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
 /* Estilo para o botão de login no tema dark (se houver um btn-login.dark) */
 .btn-login.dark {
     background-color: #0d0d3d; /* Um tom mais escuro para o botão */
@@ -959,18 +976,28 @@ td {
     transition: 0.3s ease;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @media screen and (max-width: 768px) {
-    /*
-    table {
-        width: 105%;
-    }
-    
-    
     main {
-        width: 97%;
-    }
-    */
-    
+        width: 95%;
+    } 
+   
     #generateReportBtn {
         margin-bottom: 20px;
     }
