@@ -1064,3 +1064,11 @@ body.dark .a-c {
         display: none;
     }
 }
+
+@media (orientation: landscape) {
+    #logoutBtn {
+        padding: 5px;
+        width: auto;
+        max-width: 7%;
+    }
+}
