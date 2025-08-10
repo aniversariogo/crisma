@@ -984,7 +984,16 @@ body.dark .btn-theme-encont {
     transition: 0.3s ease;
 }
 
+.a-c {
+    font-family: "Cardo", system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    color: black;
+    margin-top: 15px;
+    margin-bottom: 10px;
+}
 
+body.dark .a-c {
+    color: rgb(255, 255, 255, 0.5);
+}
 
 
 
@@ -1049,5 +1058,9 @@ body.dark .btn-theme-encont {
         width: auto;
         max-width: 15%;
         white-space: nowrap;
+    }
+
+    .a-c {
+        display: none;
     }
 }
