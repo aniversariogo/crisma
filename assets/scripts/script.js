@@ -617,7 +617,7 @@
 
         try {
           // ALTERAÇÃO CRUCIAL: Mudar o método para 'POST' e a URL para a nova rota
-          const response = await fetch(`${API_BASE_URL}/api/faltas/remover`, {
+          const response = await fetch(`${API_BASE_URL}/faltas/remover`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -1244,3 +1244,4 @@
   //   });
   // });
 })();
+
