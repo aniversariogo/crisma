@@ -995,7 +995,34 @@ body.dark .a-c {
     color: rgb(255, 255, 255, 0.5);
 }
 
+.checkbox-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 5px;
+}
 
+body.dark .checkbox-list {
+    border-color: #666;
+}
+
+.checkbox-list label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.checkbox-list input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+}
 
 
 
