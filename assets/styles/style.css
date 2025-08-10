@@ -1065,10 +1065,24 @@ body.dark .a-c {
     }
 }
 
-@media (orientation: landscape) {
+@media screen and (max-width: 1024px) and (orientation: landscape) {
+    #novoEncontroBtn, 
+    #novoCrismandoBtn {
+        position: absolute;
+        top: 5px;
+        left: 10px;
+        height: 35px;
+        width: 35px;
+    }
+
     #logoutBtn {
-        padding: 5px;
+        padding: 5px 10px;
         width: auto;
         max-width: 7%;
+
+        right: 10px;
+        bottom: 10px;
+        top: auto;
+        left: auto;
     }
 }
