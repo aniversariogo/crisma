@@ -265,7 +265,7 @@ app.post("/api/faltas", async (req, res) => {
 });
 
 // DELETE /api/faltas - Remover uma falta para um crismando em um encontro específico
-app.post('/faltas/remover', async (req, res) => {
+app.post('/api/faltas/remover', async (req, res) => {
     const { crismando_id, encontros_ids } = req.body;
 
     if (!crismando_id || !Array.isArray(encontros_ids) || encontros_ids.length === 0) {
@@ -774,3 +774,4 @@ app.get("*", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 });
+
