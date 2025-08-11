@@ -1101,6 +1101,14 @@ body.dark .checkbox-list {
     .a-c {
         display: none;
     }
+
+    .modal-mobile-faltas {
+        height: 80%;
+    }
+
+    .checkbox-mobile-faltas {
+        max-height: 300px;
+    }
 }
 
 @media screen and (max-width: 1024px) and (orientation: landscape) {
