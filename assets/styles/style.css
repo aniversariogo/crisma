@@ -1044,10 +1044,6 @@ body.dark .checkbox-list {
 
 
 
-
-
-
-
 @media screen and (max-width: 768px) {
     main {
         width: 95%;
@@ -1103,11 +1099,18 @@ body.dark .checkbox-list {
     }
 
     .modal-mobile-faltas {
-        height: 80%;
+        height: auto;
     }
 
     .checkbox-mobile-faltas {
         max-height: 300px;
+        overflow-y: auto;
+        padding-right: 10px;
+    }
+
+    .modal-open {
+        overflow: hidden;
+        position: fixed;
     }
 }
 
@@ -1130,5 +1133,10 @@ body.dark .checkbox-list {
         bottom: 10px;
         top: auto;
         left: auto;
+    }
+
+    .modal-open {
+        overflow: hidden;
+        position: fixed;
     }
 }
