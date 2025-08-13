@@ -489,15 +489,29 @@
       if (target.classList.contains("aumentar-faltas")) {
         currentCrismandoId = crismandoId;
         currentActionType = "addFalta";
+
+        document.body.classList.add("modal-open");
+        encontroSelectionModal.classList.add("modal-open");
+
         encontroSelectionModalTitle.textContent =
           "Adicionar Falta - Selecione o Encontro";
+
+          document.querySelector("#encontroSelectionModal .mdl-p").textContent = "Selecione um encontro";
+
         await fetchAllEncontrosAndPopulateModal();
         encontroSelectionModal.style.display = "block"; // CORRIGIDO AQUI
       } else if (target.classList.contains("diminuir-faltas")) {
         currentCrismandoId = crismandoId;
         currentActionType = "removeFalta";
+
+        document.body.classList.add("modal-open");
+        encontroSelectionModal.classList.add("modal-open");
+
         encontroSelectionModalTitle.textContent =
           "Selecione a Falta para Remover"; // Título para remoção
+
+          document.querySelector("#encontroSelectionModal .mdl-p").textContent = "Selecione uma ou mais faltas para remover:";
+
         await fetchFaltasDoCrismandoAndPopulateModal(crismandoId); // Mostra SOMENTE as faltas do crismando
         encontroSelectionModal.style.display = "block";
       } else if (target.classList.contains("view-faltas")) {
@@ -531,6 +545,10 @@
     // Fechar modal de seleção de encontros
     closeEncontroSelectionButton.addEventListener("click", () => {
       encontroSelectionModal.style.display = "none";
+
+      document.body.classList.remove("modal-open");
+      encontroSelectionModal.classList.remove("modal-open");
+
       currentCrismandoId = null;
       currentActionType = null;
     });
@@ -1244,4 +1262,5 @@
   //   });
   // });
 })();
+
 
