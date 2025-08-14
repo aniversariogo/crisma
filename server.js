@@ -44,7 +44,6 @@ db.connect()
 // ---------- Credenciais de Login (SIMPLES) ----------
 const USERS = {
   crismacapela25: "202526crisma",
-  crisma2025mnsp: "mnsp202526crisma",
 };
 
 // ---------- Rotas da API ----------
@@ -774,4 +773,5 @@ app.get("*", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 });
+
 
