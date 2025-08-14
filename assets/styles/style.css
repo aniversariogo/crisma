@@ -1047,7 +1047,7 @@ body.dark .checkbox-list {
 }
 
 .div-sis img {
-    width: 100px;
+    width: 60px;
 }
 
 .link-sis {
@@ -1165,4 +1165,5 @@ body.dark .link-sis {
         position: fixed;
     }
 }
+
 
