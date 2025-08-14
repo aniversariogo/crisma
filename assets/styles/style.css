@@ -1140,6 +1140,20 @@ body.dark .link-sis {
         overflow: hidden;
         position: fixed;
     }
+
+    .btn-theme-login {
+        position: absolute;
+    }
+
+    .div-sis {
+        position: absolute;
+        bottom: 30px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: row;
+    }
 }
 
 @media screen and (max-width: 1024px) and (orientation: landscape) {
@@ -1168,6 +1182,7 @@ body.dark .link-sis {
         position: fixed;
     }
 }
+
 
 
 
