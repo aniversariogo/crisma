@@ -1066,7 +1066,9 @@ body.dark .link-sis {
     border-left: 1px solid rgb(255, 255, 255, 0.5);
 }
 
-
+.br-mobile {
+    display: none;
+}
 
 
 
@@ -1143,20 +1145,25 @@ body.dark .link-sis {
 
     .btn-theme-login {
         position: absolute;
+        top: 30px;
     }
 
     .login-container {
-        margin-bottom: 30px;
+        margin-bottom: 10px;
     }
 
     .div-sis {
         position: absolute;
-        bottom: 10px;
+        bottom: 15px;
 
         display: flex;
         align-items: center;
         justify-content: center;
         flex-direction: row;
+    }
+
+    .br-mobile {
+        display: block;
     }
 }
 
@@ -1186,16 +1193,3 @@ body.dark .link-sis {
         position: fixed;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
