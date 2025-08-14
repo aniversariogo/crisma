@@ -937,6 +937,7 @@ body.dark .btn-theme-encont {
     left: 50%;
     transform: translateX(-50%);
     z-index: 1000;
+    padding: 3px 10px;
 
     display: flex;
     align-items: center;
@@ -1165,6 +1166,7 @@ body.dark .link-sis {
         position: fixed;
     }
 }
+
 
 
 
