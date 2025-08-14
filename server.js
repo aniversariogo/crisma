@@ -34,7 +34,7 @@ const db = new Pool({
 });
 
 db.connect()
-  .then(() => console.log("Conectado ao PostgreSQL no Render!"))
+  .then(() => console.log("Conectado ao PostgreSQL no Neon!"))
   .catch((err) =>
     console.error("Erro na conexão com o PostgreSQL:", err.stack)
   );
@@ -773,5 +773,6 @@ app.get("*", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 });
+
 
 
