@@ -1149,12 +1149,12 @@ body.dark .link-sis {
     }
 
     .login-container {
-        margin-bottom: 30px;
+        margin-bottom: 10px;
     }
 
     .div-sis {
         position: absolute;
-        bottom: 15px;
+        bottom: 10px;
 
         display: flex;
         align-items: center;
@@ -1193,4 +1193,5 @@ body.dark .link-sis {
         position: fixed;
     }
 }
+
 
