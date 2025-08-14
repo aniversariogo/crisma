@@ -1147,7 +1147,7 @@ body.dark .link-sis {
 
     .div-sis {
         position: absolute;
-        margin-top: 15px;
+        margin-top: 25px;
         bottom: 10px;
 
         display: flex;
@@ -1183,6 +1183,7 @@ body.dark .link-sis {
         position: fixed;
     }
 }
+
 
 
 
