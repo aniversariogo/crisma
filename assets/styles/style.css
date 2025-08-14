@@ -1036,7 +1036,32 @@ body.dark .checkbox-list {
     opacity: 0.6;
 }
 
+.div-sis {
+    position: fixed;
+    bottom: 30px;
 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+}
+
+.div-sis img {
+    width: 100px;
+}
+
+.link-sis {
+    align-items: center;
+    border-left: 1px solid rgb(0, 0, 0, 0.5);
+    padding-left: 10px;
+    font-size: 16px;
+    color: black;
+}
+
+body.dark .link-sis {
+    color: white;
+    border-left: 1px solid rgb(255, 255, 255, 0.5);
+}
 
 
 
@@ -1140,3 +1165,4 @@ body.dark .checkbox-list {
         position: fixed;
     }
 }
+
