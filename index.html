@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Crisma Capela Nossa Senhora Aparecida</title>
+    <link rel="icon" href="/assets/images/icons/logo-ns-ap.png" type="image/png">
+    <link rel="stylesheet" href="/assets/styles/style.css">
+</head>
+<body class="page-login">
+  
+  <main class="login-container">
+    <div class="btn-theme btn-theme-login" id="theme" style="z-index: 1000;">
+          <img src="/assets/images/icons/sun-icon.svg" width="28px" alt="sun-icon" class="sun-icon">
+          <div class="circle circle-login"></div>
+          <img src="/assets/images/icons/moon-icon.svg" width="30px" alt="moon-icon" class="moon-icon">
+    </div>
+    
+    <img src="/assets/images/capela-dark.png" alt="logo-capela" class="logo-capela" id="logoCapela" style="margin-bottom: -20px;">
+      
+    <h2 class="h2-login" style="text-align: center;">Login do Sistema <br class="br-mobile"> Crisma - Capela</h2>
+    <form id="loginForm">
+      <div class="input-group">
+        <label for="username">Usuário:</label>
+        <input type="text" id="username" name="username" placeholder="Digite o usuário..." required>
+      </div>
+
+      <div class="input-group password-group">
+        <label for="password">Senha:</label>
+        <input type="password" id="password" name="password" placeholder="Digite a sua senha..." required>
+        <img src="/assets/images/icons/eye-close-icon.svg" alt="Mostrar/Esconder Senha" id="passwordToggleIcon" class="toggle-password-icon">
+      </div>
+
+      <button type="submit" class="btn-login">Entrar</button>
+      <p id="errorMessage" class="error-message"></p>
+    </form>
+  </main>
+
+  <div class="div-sis">
+    <img src="/assets/images/icons/logo-paroquia-uni.png" alt="logo-paroquia-uni">
+    <a href="https://crisma-app-matriz.onrender.com/" class="link-sis">Sistema Crisma <br>Matriz</a>
+  </div>
+
+  <script src="/assets/scripts/script.js"></script>
+</body>
+
+</html>

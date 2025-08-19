@@ -1,0 +1,1195 @@
+@import url('https://fonts.googleapis.com/css2?family=Barriecito&family=Cal+Sans&family=Cardo:ital,wght@0,400;0,700;1,400&family=Londrina+Shadow&family=Londrina+Solid:wght@100;300;400;900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Odibee+Sans&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+/* Poppins, Cal Sans, Montserrat, Barriecito, Odibee Sans, Londrina Solid, Londrina Shadow, Cardo*/
+
+@keyframes mexendo {
+    0% {
+        transform: rotate(180deg) translateX(0);
+    }
+
+    50% {
+        transform: rotate(180deg) translateX(10px);
+    }
+
+    100% {
+        transform: rotate(180deg) translateX(0);
+    }
+}
+
+@keyframes mexendo2 {
+    0% {
+        transform: rotate(0deg) translateX(0);
+    }
+
+    50% {
+        transform: rotate(0deg) translateX(10px);
+    }
+
+    100% {
+        transform: rotate(0deg) translateX(0);
+    }
+}
+
+* {
+    transition: opacity 0.3s ease-in-out;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    max-width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+    text-align: justify;
+    transition: background 0.3s ease-in-out;
+}
+
+main {
+    width: 90%;
+    max-width: 1200px;
+    /* Adicionado max-width para telas grandes */
+    margin: 0 auto;
+    /* Centraliza o conteúdo principal */
+    padding: 10px;
+}
+
+table {
+    width: 100%;
+    table-layout: fixed;
+    /* Essencial para tabelas responsivas */
+    text-align: center;
+    border-radius: 10px;
+    /* border: 2px solid black; */
+    /* REMOVIDO: A borda será aplicada via thead e tbody */
+    box-shadow: 0px 0px 6px rgb(0, 0, 0, 0.2);
+    border-collapse: collapse;
+    /* NOVO: Para bordas únicas */
+}
+
+th,
+td {
+    font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    /* NOVO: Borda para células */
+    padding: 8px;
+    /* Ajuste o padding se necessário */
+
+    word-wrap: break-word;
+    /* word-wrap: nowrap; */
+
+    /* Quebra palavras longas */
+    font-size: 14px;
+    /* NOVO: Diminuído o tamanho da fonte para as células */
+}
+
+form {
+    border-radius: 20px;
+}
+
+.a-encontros {
+    color: #181853;
+}
+
+.tr-1 {
+    background-color: #fff;
+}
+
+.tr-2 {
+    background-color: rgb(0, 0, 0, 0.05);
+}
+
+.seta-icon {
+    position: absolute;
+    left: 30px;
+    width: 40px;
+    height: auto;
+    text-decoration: none;
+
+    animation: mexendo 2s linear infinite;
+}
+
+.seta-icon-ind {
+    position: absolute;
+    right: 30px;
+    width: 40px;
+    height: auto;
+    text-decoration: none;
+
+    animation: mexendo2 2s linear infinite;
+}
+
+.titulo {
+    text-align: center;
+    font-size: 16.5px;
+    background: #181853;
+    color: #fff;
+    padding: 10px;
+    border-radius: 5px 5px 0 0;
+}
+
+/* Título na página de encontros */
+.page-encontros .titulo {
+    border-radius: 10px 10px 0 0;
+    /* Ajusta o border-radius para a tabela de encontros */
+}
+
+button.icon {
+    border: none;
+    background: none;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 2px 0px;
+}
+
+.add-crismando,
+.add-crismando-faltas {
+    font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-weight: 500;
+}
+
+/* NOVO: Estilo para centralizar o botão de novo encontro */
+#novoEncontroBtn,
+#novoCrismandoBtn {
+    /* Aplicado também ao novo botão de crismando */
+    display: block;
+    /* Garante que o botão ocupe sua própria linha */
+    margin: 15px auto;
+    margin-top: 5px;
+    /* Centraliza horizontalmente e adiciona margem */
+    color: white;
+    font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-weight: 500;
+    font-size: 20px;
+    background-color: #181853;
+    padding: 3px 10px;
+    border-radius: 50%;
+    margin-bottom: 15px;
+    border: none;
+    /* Garante que não tenha borda padrão */
+    cursor: pointer;
+    /* Indica que é clicável */
+    z-index: 10000;
+}
+
+/* NOVO: Contêiner para a tabela de encontros para rolagem */
+.table-container {
+    overflow-x: auto;
+    /* Adiciona barra de rolagem horizontal se necessário */
+    -webkit-overflow-scrolling: touch;
+    /* Melhora a rolagem em touch screens */
+}
+
+
+#formDialog,
+#crismandoFormDialog {
+    /* Aplicado também ao novo modal de crismando */
+    width: 81%;
+    max-width: 500px;
+    /* Limita a largura máxima do modal */
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0px 0px 5px rgb(0, 0, 0, 0.9);
+    padding: 20px;
+    /* Adicionado padding para melhor espaçamento */
+}
+
+#encontroForm,
+#crismandoForm {
+    /* Aplicado também ao novo formulário de crismando */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 20px;
+}
+
+#formTitulo,
+#crismandoFormTitulo {
+    /* Aplicado também ao novo título do formulário de crismando */
+    font-family: "Montserrat", system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 0;
+    /* Remove margem superior padrão */
+    margin-bottom: 20px;
+    /* Adiciona margem inferior */
+}
+
+label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 100%;
+    /* Faz a label ocupar a largura total no formulário */
+}
+
+label input[type="text"],
+label input[type="date"],
+label input[type="time"],
+label input[type="number"] {
+    /* Incluído input[type="number"] */
+    width: calc(100% - 12px);
+    /* Ajusta largura considerando padding e borda */
+    padding: 5px;
+    border-radius: 10px;
+    background-color: rgb(24, 24, 83, 0.5);
+    color: white;
+    font-family: "Montserrat", system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    border: 1px solid black;
+    box-sizing: border-box;
+    /* Garante que padding e border sejam incluídos na largura */
+}
+
+/* Estilos específicos para os labels dos inputs (assunto, local, data, hora, etc.) */
+.assunto,
+.local,
+.data,
+.hora {
+    margin-bottom: 5px;
+    font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-weight: 500;
+}
+
+#dataPreview {
+    font-size: 12px;
+    color: #666;
+    margin-top: -10px;
+    /* Ajuste para ficar mais próximo do input */
+    text-align: center;
+}
+
+menu {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    /* Alterado de "wrap" para "flex-wrap" para correção */
+    gap: 10px;
+    padding-left: 0;
+    list-style: none;
+    /* Remove bolinhas padrão de lista */
+    margin-top: 20px;
+    /* Adiciona margem acima dos botões */
+}
+
+menu>button {
+    color: white;
+    font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-weight: 500;
+    font-size: 16.5px;
+    padding: 5px 10px;
+    border-radius: 10px;
+    margin-bottom: 0;
+    /* Removido margin-bottom para melhor alinhamento com gap */
+    border: none;
+    cursor: pointer;
+}
+
+#cancelarCrismandoBtn,
+#cancelarBtn {
+    background-color: rgb(255, 0, 0, 0.8);
+    border-bottom: 2px solid rgb(181, 2, 2, 0.8);
+}
+
+#salvarCrismandoBtn,
+#salvarBtn {
+    background-color: rgb(0, 255, 0, 0.8);
+    border-bottom: 2px solid rgb(20, 181, 2, 0.8);
+}
+
+.btn-theme {
+    cursor: pointer;
+    position: absolute;
+    top: 10px;
+    left: 8px;
+    border-radius: 20px;
+    background-image: url("/assets/images/ceu-bg.jpg");
+    background-position: center center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    padding: 3.5px 10px 0px 10px;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.5);
+}
+
+.btn-theme img {
+    position: relative;
+    cursor: pointer;
+}
+
+.moon-icon {
+    position: absolute;
+    left: 7px;
+    transform: rotate(-180deg);
+    transition: 0.3s;
+}
+
+.sun-icon {
+    position: absolute;
+    right: 5px;
+    transform: rotate(180deg);
+    transition: 0.3s;
+}
+
+.circle {
+    z-index: 1000;
+    background-color: #1b1e23;
+    padding: 14px;
+    border-radius: 50%;
+
+    position: absolute;
+    cursor: pointer;
+    top: 5px;
+    left: 6.5px;
+
+    transition: 0.3s ease-in-out;
+}
+
+.btn-theme-encont {
+    position: absolute;
+    top: 10px;
+    right: 8px;
+    border-radius: 20px;
+    background-image: url("/assets/images/ceu-bg.jpg");
+    background-position: center center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    padding: 3.5px 10px 0px 10px;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+}
+
+.btn-theme-encont img {
+    position: relative;
+    cursor: pointer;
+}
+
+.logo-capela {
+    display: block;
+    margin-top: 20px;
+    position: relative;
+    bottom: 20px;
+    width: 300px;
+    height: auto;
+}
+
+/* Dark theme */
+.dark {
+    transition: background 0.3s ease-in-out;
+}
+
+body.dark {
+    background-color: #1b1e23;
+    transition: background 0.3s ease-in-out;
+}
+
+label.dark {
+    color: white;
+}
+
+.circle.dark {
+    transition: 0.3s ease-in-out;
+    background-color: white;
+    left: 48px;
+}
+
+.circle.dark {
+    transition: 0.3s ease-in-out;
+    background-color: rgb(255, 255, 255);
+    top: 4px;
+    left: 49.5px;
+}
+
+#theme.dark {
+    background-image: url("/assets/images/ceu-dark.jpg");
+    background-position: bottom center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.sun-icon.dark {
+    transform: rotate(-180deg);
+    transition: 0.8s ease-out;
+}
+
+.moon-icon.dark {
+    transform: rotate(180deg);
+    transition: 0.8s ease-out;
+}
+
+.titulo.dark {
+    background-color: #181853;
+}
+
+/* .tr-1.dark {
+    color: white;
+    background-color: rgb(0, 0, 0, 0.1);
+} */
+
+.tr-2.dark {
+    color: white;
+    background-color: rgb(255, 255, 255, 0.2);
+}
+
+body.dark td {
+    color: white;
+    background-color: rgb(0, 0, 0, 0.1);
+}
+
+body.dark .tr-1 {
+    color: white;
+    background-color: rgb(0, 0, 0, 0.3);
+}
+
+body.dark button {
+    color: white;
+}
+
+.td2.dark {
+    background-color: rgb(0, 0, 0, 0);
+}
+
+.a-encontros.dark {
+    color: rgb(145, 145, 234);
+}
+
+.encont-label.dark {
+    color: white;
+    background-color: rgb(255, 255, 255, 0.3);
+}
+
+#crismandoFormDialog.dark {
+    color: white;
+    background-color: #1b1e23;
+}
+
+#formDialog.dark {
+    color: white;
+    background-color: #1b1e23;
+}
+
+#dataPreview.dark {
+    color: rgb(255, 255, 255, 0.5);
+}
+
+#qtdAlunos.dark {
+    background-color: rgb(0, 0, 0, 0);
+}
+
+.crismando-presencas {
+    margin-bottom: 5px;
+    font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-weight: 500;
+}
+
+.crismando-presencas input {
+    padding: 5px;
+    border-radius: 10px;
+    background-color: rgb(24, 24, 83, 0.5);
+    /* Example color */
+    border: none;
+    outline: none;
+    color: white;
+}
+
+/* Adjust table headers and cells if needed for spacing */
+th,
+td {
+    text-align: center;
+}
+
+#generateReportBtn {
+    margin-top: 20px;
+    margin-bottom: 30px;
+    padding-right: 15px;
+
+    border: none;
+    border-bottom: 2px solid rgb(24, 24, 83, 0.8);
+    box-shadow: 0px 0px 3px rgb(0, 0, 0, 0.5);
+    cursor: pointer;
+
+    color: white;
+    font-family: "Montserrat", system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-weight: 500;
+    font-size: 15px;
+    background-color: rgb(24, 24, 83, 0.8);
+
+    border-radius: 10px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+}
+
+.pdf-icon {
+    position: relative;
+    width: 60px;
+    height: auto;
+    margin-left: 0;
+    padding-left: 0;
+}
+
+.btn-word-download {
+    text-decoration: none;
+    text-align: center;
+
+    margin-top: 20px;
+    margin-bottom: 30px;
+    padding-right: 15px;
+
+    border: none;
+    border-bottom: 2px solid rgb(24, 24, 83, 0.6);
+    box-shadow: 0px 0px 3px rgb(0, 0, 0, 0.5);
+    cursor: pointer;
+
+    color: white;
+    font-family: "Montserrat", system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-weight: 500;
+    font-size: 15px;
+    background-color: rgb(24, 24, 83, 0.5);
+
+    border-radius: 10px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+}
+
+.word-icon {
+    position: relative;
+    width: 50px;
+    height: auto;
+    padding: 5px 10px 5px 5px;
+}
+
+.modal {
+    display: none;
+    /* Escondido por padrão */
+    position: fixed;
+    /* Fica por cima de tudo */
+    z-index: 100000;
+    /* Z-index alto para ficar na frente */
+    left: 0;
+    top: 0;
+    width: 100%;
+    /* Largura total */
+    height: 100%;
+    /* Altura total */
+    overflow: auto;
+    /* Habilita scroll se o conteúdo for muito grande */
+    background-color: rgba(0, 0, 0, 0.4);
+    /* Fundo semi-transparente */
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 10% auto; /* Ajustado para 10% para subir um pouco o modal */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px; /* Adicionado um max-width para não ficar muito grande em telas largas */
+    border-radius: 8px;
+    position: relative; /* Essencial para o close-button absoluto */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.modal-content h2 {
+    font-family: "Montserrat", system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    margin-right: 40px; /* Garante que o H2 não se estenda sob o botão 'x' */
+    /* Outros estilos do h2 podem permanecer */
+    text-align: center; /* Centraliza o título */
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.close-button {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    position: absolute; /* Torna o botão absoluto */
+    right: 15px; /* Posição à direita */
+    top: 10px; /* Posição no topo */
+    z-index: 1001; /* Garante que fique acima de outros elementos do modal */
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#encontrosRadioButtons label {
+    font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    display: block;
+    margin-bottom: 20px;
+    cursor: pointer;
+}
+
+#encontrosRadioButtons input[type="radio"] {
+    cursor: pointer;
+    margin-right: 0px;
+}
+
+#confirmSelectionBtn {
+    font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    background-color: #4CAF50;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+    border-bottom: 2px solid #3c8b40;
+
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#confirmSelectionBtn:hover {
+    background-color: #45a049;
+}
+
+#faltasDetailsModal .modal-content {
+    /* Pode usar os mesmos estilos do .modal-content ou personalizar */
+    padding: 30px;
+}
+
+#faltasDetailsModal h2 {
+    margin-bottom: 25px;
+}
+
+
+#faltasList {
+    max-height: 300px; /* Limita a altura da lista de faltas */
+    overflow-y: auto; /* Adiciona scroll se a lista for muito longa */
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+#faltasList ul {
+    list-style: none; /* Remove marcadores de lista padrão */
+    padding: 0;
+    margin: 0;
+}
+
+#faltasList li {
+    font-family: "Cardo", 'Times New Roman', Times, serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    padding: 8px 0;
+    border-bottom: 1px dashed #eee;
+    font-size: 1em;
+    font-weight: 900;
+    color: black;
+}
+
+#faltasList li:last-child {
+    border-bottom: none;
+}
+
+/* Para o modo escuro */
+#faltasList.dark {
+    border-color: #667;
+}
+
+#faltasList.dark li {
+    border-bottom-color: #444;
+    color: white; 
+}
+
+#faltasList p {
+    text-align: center;
+    color: #777;
+    font-style: italic;
+}
+
+#faltasList.dark p {
+    color: white;
+}
+
+/* Certifique-se que o .close-button esteja definido corretamente para ambos os modais */
+.modal .close-button {
+    z-index: 1000;
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close-button.dark:hover,
+.close-button.dark:focus {
+    color: white; /* Para o tema escuro */
+}
+
+.modal-content.dark {
+    background-color: #333;
+    border-color: #555;
+    color: #eee;
+}
+
+.modal-content.dark h2 {
+    color: #eee;
+}
+
+.logo-capela.dark {
+    display: block;
+}
+
+.page-login {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.h2-login {
+    font-family: "Montserrat", system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-weight: 700;
+    font-size: 22px;
+}
+
+.login-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    
+    padding: 20px;
+    width: 30%;
+    height: auto;
+    border-radius: 20px;
+    
+    background-color: rgb(0, 0, 0, 0.1);
+    box-shadow: 0px 0px 5px rgb(0, 0, 0, 0.5);
+}
+
+#loginForm {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.input-group > label {
+    font-family: "Montserrat", system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.input-group > input {
+    font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-size: 16px;
+    border-radius: 40px;
+    padding: 5px;
+
+    outline: none;
+}
+
+.input-group > input::placeholder {
+    font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-size: 14px;
+    padding: 0px 5px;
+    font-weight: 300;
+}
+
+.btn-login {
+    font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-size: 16.5px;
+    background-color: #181853;
+    box-shadow: 0px 0px 5px rgb(0, 0, 0, 0.3);
+    border-radius: 10px;
+    padding: 5px 10px;
+    color: white;
+    border: none;
+    z-index: 100;
+    margin-top: 10px;
+    margin-bottom: -20px;
+    transition: 0.15s ease;
+}
+
+.btn-login:hover {
+    transition: background 0.15s ease;
+    background-color: #4b4ba3;
+}
+
+.btn-login:active {
+    transition: 0.15s ease;
+    transform: scale(0.95);
+}
+
+.btn-login:hover {
+    cursor: pointer;
+}
+
+.error-message {
+    color: black;
+    font-family: "Cardo", system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+.page-login.dark {
+    background-color: #1b1e23;
+}
+
+.h2-login.dark {
+    color: white;
+}
+
+body.dark .error-message {
+    color: white;
+}
+
+.logout-button {
+    font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    position: fixed; /* Ou relative, dependendo do container pai */
+    bottom: 10px; /* Ajuste a posição conforme necessário */
+    right: 10px; /* Ajuste a posição conforme necessário */
+    background-color: #d9534f; /* Cor vermelha para o botão de sair */
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    z-index: 999; /* Para garantir que ele apareça sobre outros elementos */
+    width: auto;
+    max-width: 90%;
+    white-space: nowrap;
+}
+
+.logout-button:hover {
+    background-color: #c9302c;
+}
+
+.logout-button.dark {
+    background-color: #a0403d;
+}
+
+/* Estilos para a página de login quando no tema dark */
+.page-login.dark {
+    background-color: #1b1e23; /* Fundo da página de login no tema dark */
+}
+
+.h2-login.dark {
+    color: white; /* Cor do título de login */
+}
+
+/* Estilos para inputs e labels APENAS dentro do container de login no tema dark */
+.login-container label.dark {
+    color: white;
+}
+
+.login-container input.dark {
+    background-color: #3b3f46;
+    color: #fff;
+    border-color: #555;
+}
+
+.login-container .input-group > input.dark::placeholder {
+    color: #aaa;
+}
+
+.circle-login.dark {
+    transition: 0.3s ease-in-out;
+    background-color: rgb(255, 255, 255);
+    top: 2.3px;
+    left: 45px;
+}
+
+body.dark .btn-theme {
+    background-image: url('/assets/images/ceu-dark.jpg');
+    background-position: bottom center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+body.dark .btn-theme-encont {
+    background-image: url('/assets/images/ceu-dark.jpg');
+    background-position: bottom center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+/* Estilo para o botão de login no tema dark (se houver um btn-login.dark) */
+.btn-login.dark {
+    background-color: #0d0d3d; /* Um tom mais escuro para o botão */
+    color: white;
+    border-color: #2a2a5a;
+}
+
+.btn-theme-login {
+    position: fixed;
+    top: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    padding: 3px 10px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.circle-login {
+    z-index: 1000;
+    background-color: #1b1e23;
+    padding: 14px;
+    border-radius: 50%;
+
+    position: absolute;
+    cursor: pointer;
+    top: 3px;
+    left: 6.5px;
+
+    transition: 0.3s ease-in-out;
+}
+
+/* Estilos para o grupo de input, garantindo que o posicionamento relativo funcione */
+.input-group {
+    position: relative; /* Isso já existe e é essencial */
+    margin-bottom: 15px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Estilos para o ícone de alternância da senha */
+.toggle-password-icon {
+    width: 25px;
+    height: auto;
+    position: absolute;
+    right: 10px; /* Ajuste para posicionar o ícone mais próximo da borda direita do input */
+    top: 70%; /* Centraliza verticalmente o ícone */
+    transform: translateY(-50%); /* Ajuste fino para centralização vertical perfeita */
+    cursor: pointer;
+    z-index: 2; /* Garante que o ícone esteja acima do input */
+    background-color: transparent; /* Valor correto para cor de fundo transparente */
+    border: none;
+    width: 20px; /* Defina uma largura explícita para o ícone para consistência */
+    height: auto; /* Mantém a proporção da imagem */
+    transition: 0.3s ease;
+}
+
+.a-c {
+    font-family: "Cardo", system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    color: black;
+    margin-top: 15px;
+    margin-bottom: 10px;
+}
+
+body.dark .a-c {
+    color: rgb(255, 255, 255, 0.5);
+}
+
+.checkbox-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+body.dark .checkbox-list {
+    border-color: #666;
+}
+
+.checkbox-list label {
+    font-family: "Cardo", system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.checkbox-list input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+}
+
+.mdl-p {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    font-family: "Times New Roman", system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    margin-bottom: -10px;
+    opacity: 0.6;
+}
+
+.div-sis {
+    position: fixed;
+    bottom: 30px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+}
+
+.div-sis img {
+    width: 50px;
+    padding-right: 8px;
+}
+
+.link-sis {
+    align-items: center;
+    border-left: 1px solid rgb(0, 0, 0, 0.5);
+    padding-left: 10px;
+    font-size: 16px;
+    color: black;
+}
+
+body.dark .link-sis {
+    color: white;
+    border-left: 1px solid rgb(255, 255, 255, 0.5);
+}
+
+.br-mobile {
+    display: none;
+}
+
+
+
+
+
+@media screen and (max-width: 768px) {
+    main {
+        width: 95%;
+    } 
+   
+    #generateReportBtn {
+        margin-bottom: 20px;
+    }
+
+    .logo-capela {
+        margin-top: 10px;
+        width: 200px;
+        height: auto;
+        position: relative;
+        bottom: 10px;
+    }
+
+    #novoEncontroBtn,
+    #novoCrismandoBtn {
+        padding: 2.5px 10px;
+        position: fixed;
+        right: 10px;
+        bottom: -7px;
+    }
+
+    article {
+        margin-top: 50px;
+    }
+
+    section {
+        border-radius: 20px;
+    }
+
+    .sect-encont {
+        margin-top: 50px;
+    }
+
+    .login-container {
+        width: 80%;
+    }
+
+    .logout-button {
+        position: fixed;
+        bottom: 10px;
+        left: 10px;
+        width: auto;
+        max-width: 15%;
+        white-space: nowrap;
+    }
+
+    .a-c {
+        display: none;
+    }
+
+    .modal-mobile-faltas {
+        height: auto;
+    }
+
+    .checkbox-mobile-faltas {
+        max-height: 300px;
+        overflow-y: auto;
+        padding-right: 10px;
+    }
+
+    .modal-open {
+        overflow: hidden;
+        position: fixed;
+    }
+
+    .btn-theme-login {
+        position: absolute;
+        top: 30px;
+    }
+
+    .login-container {
+        margin-bottom: 30px;
+    }
+
+    .div-sis {
+        position: absolute;
+        bottom: 15px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: row;
+    }
+
+    .br-mobile {
+        display: block;
+    }
+}
+
+@media screen and (max-width: 1024px) and (orientation: landscape) {
+    #novoEncontroBtn, 
+    #novoCrismandoBtn {
+        position: absolute;
+        top: 5px;
+        left: 10px;
+        height: 35px;
+        width: 35px;
+    }
+
+    #logoutBtn {
+        padding: 5px 10px;
+        width: auto;
+        max-width: 7%;
+
+        right: 10px;
+        bottom: 10px;
+        top: auto;
+        left: auto;
+    }
+
+    .modal-open {
+        overflow: hidden;
+        position: fixed;
+    }
+}
