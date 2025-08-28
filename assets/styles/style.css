@@ -1125,7 +1125,7 @@ body.dark .link-sis {
     }
 
     .a-c {
-        display: none;
+        display: block;
     }
 
     .modal-mobile-faltas {
