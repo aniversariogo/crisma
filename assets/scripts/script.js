@@ -1006,9 +1006,9 @@
 
       if (data) {
         if (hora) {
-          dataCompleta = new Date(`${data}T${hora}`).toISOString();
+          dataCompleta = `${data}T${hora}:00`;
         } else {
-          dataCompleta = new Date(`${data}T00:00`).toISOString();
+          dataCompleta = `${data}T00:00:00`;
         }
       } else {
         dataCompleta = new Date().toISOString();
