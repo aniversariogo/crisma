@@ -712,9 +712,9 @@ td {
 }
 
 #faltasList p {
-    text-align: center;
+    text-align: left;
     color: #777;
-    font-style: italic;
+    font-style: normal;
 }
 
 #faltasList.dark p {
@@ -1070,8 +1070,82 @@ body.dark .link-sis {
     display: none;
 }
 
+.local {
+    background-color: #8b8ba9;
+    padding: 5px 0px;
+    border-radius: 15px;
+    border: 1px solid black;
+}
 
+.local-radio-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-top: 5px;
+    width: 100%;
+    border-top: 1px solid black;
+}
 
+/* Estilos para cada opção de rádio (substitui o label inline style) */
+.radio-option {
+    display: flex; /* Garante que 'flex-direction: row' (o padrão) funcione para alinhar o input com o texto */
+    flex-direction: row; 
+    justify-content: flex-start;
+    align-items: center;
+    margin-bottom: 5px;
+    cursor: pointer;
+    font-weight: 400;
+    font-size: 14px;
+    padding: 5px 5px 0px 10px;
+    color: white;
+    /* color: var(--text-color); Usa a variável de cor principal para temas (se tiver) */
+}
+
+/* Ajuste específico para o input de rádio */
+.radio-input {
+    position: absolute;
+    right: 25px;
+    /* margin-right: 5px; */
+    /* Garante que o input de rádio não herde estilos de outros inputs de texto */
+    width: auto !important; 
+    height: auto !important;
+}
+
+/* Estilos para o campo de texto "Outro" (substitui o input #localOutroInput inline style) */
+.local-outro-input {
+    margin-top: 0px;
+    margin-bottom: 5px;
+    /* A propriedade 'display: none' para ocultar/exibir é controlada pelo JavaScript */
+}
+
+body.dark .radio-option {
+    color: white;
+}
+
+body.dark .local {
+    background-color: #191b3b;
+}
+
+/* --- Estilos para o Modal de Detalhes das Faltas (#faltasList) --- */
+
+/* Remove marcadores de lista padrão e padding */
+#faltasList ul {
+    list-style: none;
+    padding: 0;
+}
+
+/* Estilo para cada item (encontro) na lista */
+#faltasList li {
+    font-weight: normal;
+    font-family: "Cardo", system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    padding: 3px 0; 
+    border-bottom: 1px dashed #ccc; 
+}
+
+/* Estilo para os parágrafos dentro de cada item (Encontro, Data, Local) */
+#faltasList li p {
+    margin: 2px 0; 
+}
 
 
 @media screen and (max-width: 768px) {
