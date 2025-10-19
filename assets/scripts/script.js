@@ -618,9 +618,7 @@
           // }
 
           alert(`Falta adicionada com sucesso para ${crismando.nome}!`);
-          // encontroSelectionModal.style.display = "none"; // CORRIGIDO AQUI
-          encontroSelectionModal.close();
-          document.body.classList.remove("modal-open");
+          encontroSelectionModal.style.display = "none"; // CORRIGIDO AQUI
           fetchAndRenderData();
         } catch (error) {
           console.error("Erro ao adicionar falta:", error);
@@ -660,11 +658,7 @@
           alert(
             `${encontrosIds.length} falta(s) removida(s) com sucesso para ${crismando.nome}!`
           );
-          // encontroSelectionModal.style.display = "none";
-          closeEncontroSelectionButton.addEventListener("click", () => {
-            encontroSelectionModal.close();
-            document.body.classList.remove("modal-open");
-          });
+          encontroSelectionModal.style.display = "none";
           fetchAndRenderData();
         } catch (error) {
           console.error("Erro ao retirar falta:", error);
