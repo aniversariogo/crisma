@@ -11,6 +11,12 @@ if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
 }
 
+function stripHtmlTags(str) {
+  if (!str) return "";
+  // Expressão regular para remover tags HTML (ex: <b>, </b>, <p>)
+  return str.replace(/<[^>]*>/g, "");
+}
+
 const app = express();
 const PORT = process.env.PORT || 10000; // Use a porta 10000 como o Render sugere ou 3000 localmente
 
@@ -265,37 +271,37 @@ app.post("/api/faltas", async (req, res) => {
 
 // DELETE /api/faltas - Remover uma falta para um crismando em um encontro específico
 app.post('/api/faltas/remover', async (req, res) => {
-    const { crismando_id, encontros_ids } = req.body;
+  const { crismando_id, encontros_ids } = req.body;
 
-    if (!crismando_id || !Array.isArray(encontros_ids) || encontros_ids.length === 0) {
-        return res.status(400).json({ error: 'crismando_id e um array de encontros_ids são obrigatórios.' });
+  if (!crismando_id || !Array.isArray(encontros_ids) || encontros_ids.length === 0) {
+    return res.status(400).json({ error: 'crismando_id e um array de encontros_ids são obrigatórios.' });
+  }
+
+  try {
+    // 1. Deletar as faltas
+    const deleteResult = await db.query(
+      'DELETE FROM faltas_crismandos WHERE crismando_id = $1 AND encontro_id = ANY($2::int[]) RETURNING *',
+      [crismando_id, encontros_ids]
+    );
+
+    if (deleteResult.rows.length === 0) {
+      return res.status(404).json({ error: 'Nenhuma falta encontrada para ser removida.' });
     }
 
-    try {
-        // 1. Deletar as faltas
-        const deleteResult = await db.query(
-            'DELETE FROM faltas_crismandos WHERE crismando_id = $1 AND encontro_id = ANY($2::int[]) RETURNING *',
-            [crismando_id, encontros_ids]
-        );
+    // 2. Atualizar o contador de faltas e presenças do crismando (diminui o número de faltas removidas)
+    await db.query(
+      'UPDATE crismandos SET faltas = faltas - $1 WHERE id = $2',
+      [deleteResult.rows.length, crismando_id]
+    );
 
-        if (deleteResult.rows.length === 0) {
-            return res.status(404).json({ error: 'Nenhuma falta encontrada para ser removida.' });
-        }
-
-        // 2. Atualizar o contador de faltas e presenças do crismando (diminui o número de faltas removidas)
-        await db.query(
-            'UPDATE crismandos SET faltas = faltas - $1 WHERE id = $2',
-            [deleteResult.rows.length, crismando_id]
-        );
-
-        res.json({
-            message: `${deleteResult.rows.length} falta(s) removida(s) com sucesso!`,
-            removed_faltas: deleteResult.rows
-        });
-    } catch (err) {
-        console.error('Erro ao remover falta:', err);
-        res.status(500).json({ error: 'Erro ao remover falta' });
-    }
+    res.json({
+      message: `${deleteResult.rows.length} falta(s) removida(s) com sucesso!`,
+      removed_faltas: deleteResult.rows
+    });
+  } catch (err) {
+    console.error('Erro ao remover falta:', err);
+    res.status(500).json({ error: 'Erro ao remover falta' });
+  }
 });
 
 // app.delete('/api/faltas', async (req, res) => {
@@ -491,6 +497,39 @@ app.delete("/api/encontros/:id", async (req, res) => {
   }
 });
 
+function printFormattedText(
+  doc,
+  text,
+  defaultFont,
+  boldFont,
+  fontSize,
+  continued = false
+) {
+  const parts = text.split(/(<b>.*?<\/b>)/g);
+  let isContinued = continued;
+
+  parts.forEach((part, index) => {
+    if (!part) return;
+
+    const isBold = part.startsWith("<b>") && part.endsWith("</b>");
+    const isLastPart = index === parts.length - 1;
+
+    const options = { continued: isContinued || !isLastPart };
+
+    if (isBold) {
+      const boldText = part.slice(3, -4);
+      doc.font(boldFont).fontSize(fontSize);
+      doc.text(boldText, options);
+
+    } else {
+      doc.font(defaultFont).fontSize(fontSize);
+      doc.text(part, options);
+    }
+
+    isContinued = options.continued;
+  });
+}
+
 // GET /api/report/pdf - Gera e envia um relatório PDF
 app.get("/api/report/pdf", async (req, res) => {
   try {
@@ -618,10 +657,15 @@ app.get("/api/report/pdf", async (req, res) => {
           .text(`Assunto: `, { continued: true });
 
         doc
-          .font("Helvetica")
+          .font("Helvetica-Oblique")
           .fontSize(12)
-          .text(`${encontro.assunto}`)
-          .moveDown(0.2);
+          .text(stripHtmlTags(encontro.assunto));
+
+        // doc
+        //   .font("Helvetica")
+        //   .fontSize(12)
+        //   .text(`${encontro.assunto}`)
+        //   .moveDown(0.2);
 
         doc
           .font("Helvetica-Bold")
@@ -718,15 +762,21 @@ app.get("/api/report/pdf", async (req, res) => {
               }
             );
 
+            // const assuntoLimpo = stripHtmlTags(falta.assunto);
+
             doc
               .font("Helvetica-Bold")
               .fontSize(11)
               .text(`   - Assunto: `, { continued: true });
 
+            // doc
+            //   .font("Helvetica-Oblique")
+            //   .fontSize(11)
+            //   .text(`${falta.assunto}, `, { continued: true });
             doc
               .font("Helvetica-Oblique")
               .fontSize(11)
-              .text(`${falta.assunto}, `, { continued: true });
+              .text(`${stripHtmlTags(falta.assunto)}, `, { continued: true });
 
             doc
               .font("Helvetica-Bold")
