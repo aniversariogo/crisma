@@ -1,24 +1,27 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crisma - Capela Nossa Senhora Aparecida</title>
-    <link rel="icon" href="/assets/images/icons/logo-ns-ap.png" type="image/png">
-    <link rel="stylesheet" href="/assets/styles/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crisma - Capela Nossa Senhora Aparecida</title>
+  <link rel="icon" href="/assets/images/icons/logo-ns-ap.png" type="image/png">
+  <link rel="stylesheet" href="/assets/styles/style.css">
 </head>
+
 <body class="page-encontros">
 
   <main>
 
     <a href="/index.html" class="link">
-        <img src="/assets/images/icons/arrow-dark-icon.svg" alt="seta-icon" class="seta-icon-ind" id="arrowIcon" style="rotate: 180deg; left: 30px;">
+      <img src="/assets/images/icons/arrow-dark-icon.svg" alt="seta-icon" class="seta-icon-ind" id="arrowIcon"
+        style="rotate: 180deg; left: 30px;">
     </a>
 
     <div class="btn-theme-encont" id="theme" style="z-index: 1000;">
-        <img src="/assets/images/icons/sun-icon.svg" width="28px" alt="sun-icon" class="sun-icon">
-        <div class="circle"></div>
-        <img src="/assets/images/icons/moon-icon.svg" width="30px" alt="moon-icon" class="moon-icon">
+      <img src="/assets/images/icons/sun-icon.svg" width="28px" alt="sun-icon" class="sun-icon">
+      <div class="circle"></div>
+      <img src="/assets/images/icons/moon-icon.svg" width="30px" alt="moon-icon" class="moon-icon">
     </div>
 
     <button id="logoutBtn" class="logout-button">Sair</button>
@@ -26,19 +29,27 @@
     <section class="sect-encont">
       <button id="novoEncontroBtn">+</button>
 
-      <div class="table-container"> <table cellpadding="10" cellspacing="0">
+      <div class="table-container">
+        <table cellpadding="10" cellspacing="0">
           <thead>
-          <tr>
-              <th colspan="4" class="titulo">Encontros do Crisma 2025/26</th> </tr>
-            <tr class="encont-label"><th>Data/Hora</th><th>Assunto</th><th>Local</th><th>Ações</th></tr>
+            <tr>
+              <th colspan="4" class="titulo">Encontros do Crisma 2025/26</th>
+            </tr>
+            <tr class="encont-label">
+              <th>Data/Hora</th>
+              <th>Assunto</th>
+              <th>Local</th>
+              <th>Ações</th>
+            </tr>
           </thead>
           <tbody id="encontrosTbody"></tbody>
           <tr class="tr-2">
-              <th colspan="2">Quantidade de encontros:</th>
-              <td id="qtdEncontrosEncontrosPage" class="td2" colspan="2">0</td>
-            </tr>
+            <th colspan="2">Quantidade de encontros:</th>
+            <td id="qtdEncontrosEncontrosPage" class="td2" colspan="2">0</td>
+          </tr>
         </table>
-      </div> </section>
+      </div>
+    </section>
   </main>
 
   <dialog id="formDialog">
@@ -49,8 +60,26 @@
         <input type="text" name="assunto" id="assuntoInput" required>
       </label>
 
-      <label class="local">Local
+      <!-- <label class="local">Local
         <input type="text" name="local" id="localInput" required>
+      </label> -->
+
+      <label class="local">Local
+        <div id="localRadioGroup" class="local-radio-group">
+          <label class="radio-option">
+            <input type="radio" name="localOption" value="Capela de Nossa Senhora Aparecida" checked class="radio-input">
+            Capela de Nossa Senhora Aparecida
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="localOption" value="Matriz de Nossa Senhora da Piedade" class="radio-input">
+            Matriz de Nossa Senhora da Piedade
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="localOption" value="Outro" id="outroRadio" class="radio-input">
+            Outro 
+          </label>
+        </div>
+        <input type="text" name="localOutro" id="localOutroInput" placeholder="Digite o nome do local..." class="local-outro-input" required>
       </label>
 
       <label class="data">Data
@@ -61,7 +90,8 @@
         <input type="time" name="hora" id="horaInput">
       </label>
 
-      <p id="dataPreview">* OBS: caso não seja escolhido uma data/hora, é gerado um automática no momento do cadastro do encontro!</p>
+      <p id="dataPreview">* OBS: caso não seja escolhido uma data/hora, é gerado um automática no momento do cadastro do
+        encontro!</p>
 
       <menu>
         <button value="cancel" id="cancelarBtn">Cancelar</button>
@@ -70,11 +100,12 @@
     </form>
   </dialog>
 
-  <a href="https://academicoifrnedu-my.sharepoint.com/:w:/g/personal/misael_b_academico_ifrn_edu_br/ETmhQDw85LNDtyZoRngLLKUBjRY4QXUoxsfFWa0ctmU2MA?e=Ucw9Rp" target="_blank" class="a-c">
+  <a href="https://academicoifrnedu-my.sharepoint.com/:w:/g/personal/misael_b_academico_ifrn_edu_br/ETmhQDw85LNDtyZoRngLLKUBjRY4QXUoxsfFWa0ctmU2MA?e=Ucw9Rp"
+    target="_blank" class="a-c">
     Conteúdo completo Crisma</a>
 
   <a class="btn-word-download" href="/assets/documents/Conteúdo-crisma-completo.docx">
-    <img src="/assets/images/icons/word-icon.svg" alt="word-icon.svg" class="word-icon"> 
+    <img src="/assets/images/icons/word-icon.svg" alt="word-icon.svg" class="word-icon">
     Baixar conteúdo <br> completo do Crisma
   </a>
 
