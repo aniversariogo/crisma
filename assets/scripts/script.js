@@ -216,26 +216,20 @@
           <tr data-id="${aluno.id}" class="${linhaClass}">
             <td>${aluno.nome}</td>
             <td>
-              <button class="icon diminuir-faltas" data-crismando-id="${
-                aluno.id
-              }" ${aluno.faltas <= 0 ? "disabled" : ""}>-</button>
-              <span class="faltas-valor">${
-                aluno.faltas
-              }</span> <button class="icon aumentar-faltas" data-crismando-id="${
-            aluno.id
+              <button class="icon diminuir-faltas" data-crismando-id="${aluno.id
+          }" ${aluno.faltas <= 0 ? "disabled" : ""}>-</button>
+              <span class="faltas-valor">${aluno.faltas
+          }</span> <button class="icon aumentar-faltas" data-crismando-id="${aluno.id
           }">+</button>
             </td>
             <td>${Math.max(0, presencasCalculadas)}</td>
             <td>
-              <button class="icon view-faltas" data-crismando-id="${
-                aluno.id
-              }">👁️</button>
-              <button class="icon edit-crismando" data-crismando-id="${
-                aluno.id
-              }">✏️</button>
-              <button class="icon del-crismando" data-crismando-id="${
-                aluno.id
-              }">🗑️</button>
+              <button class="icon view-faltas" data-crismando-id="${aluno.id
+          }">👁️</button>
+              <button class="icon edit-crismando" data-crismando-id="${aluno.id
+          }">✏️</button>
+              <button class="icon del-crismando" data-crismando-id="${aluno.id
+          }">🗑️</button>
             </td>
           </tr>
         `
@@ -603,8 +597,7 @@
             const data = await response.json();
             // O servidor envia uma propriedade 'message', não 'error', para esta situação
             alert(
-              `Erro ao adicionar falta: ${
-                data.message || data.error || "Erro desconhecido."
+              `Erro ao adicionar falta: ${data.message || data.error || "Erro desconhecido."
               }`
             );
             return;
@@ -843,9 +836,14 @@
             });
             const li = document.createElement("li");
             // Garante que o texto da lista seja claro
-            li.textContent = `Assunto: ${falta.assunto || "N/A"}, Data: ${
-              dataFaltaFormatada || "N/A"
-            }, Local: ${falta.local || "N/A"}`;
+            // li.textContent = `Assunto: ${falta.assunto || "N/A"}, Data: ${dataFaltaFormatada || "N/A"
+            //   }, Local: ${falta.local || "N/A"}`;
+            // Garante que o texto da lista seja claro
+            li.innerHTML = `
+    <p><strong>Encontro:</strong> ${falta.assunto || "N/A"}</p>
+    <p><strong>Data:</strong> ${dataFaltaFormatada || "N/A"}</p>
+    <p><strong>Local:</strong> ${falta.local || "N/A"}</p>
+`;
             ul.appendChild(li);
           });
           faltasListDiv.appendChild(ul);
@@ -964,6 +962,25 @@
     const cancelarBtn = $("#cancelarBtn");
     const qtdEncontrosEncontrosPageEl = $("#qtdEncontrosEncontrosPage");
 
+    const localOutroInput = document.getElementById("localOutroInput");
+    const localRadioGroup = document.getElementById("localRadioGroup");
+
+    if (localRadioGroup && localOutroInput) {
+      localRadioGroup.addEventListener("change", (event) => {
+        if (event.target.name === "localOption") {
+          const isOutro = event.target.value === "Outro";
+          localOutroInput.style.display = isOutro ? "block" : "none";
+          localOutroInput.required = isOutro;
+          if (!isOutro) {
+            localOutroInput.value = "";
+          }
+        }
+      });
+      // Inicializa o estado
+      localOutroInput.style.display = "none";
+      localOutroInput.required = false;
+    }
+
     let encontros = [];
 
     async function fetchAndRenderEncontros() {
@@ -993,10 +1010,37 @@
     encontroForm.addEventListener("submit", async (event) => {
       event.preventDefault();
       const id = encontroForm.dataset.id;
+      // const local = localInput.value.trim();
       const assunto = assuntoInput.value.trim();
-      const local = localInput.value.trim();
       let data = dataInput.value;
       let hora = horaInput.value;
+
+      let local;
+      const selectedLocalRadio = encontroForm.querySelector(
+        'input[name="localOption"]:checked'
+      );
+
+      if (selectedLocalRadio) {
+        if (selectedLocalRadio.value === "Outro") {
+          local = localOutroInput.value.trim();
+          if (!local) {
+            alert("Por favor, especifique o local 'Outro'.");
+            return;
+          }
+        } else {
+          local = selectedLocalRadio.value;
+        }
+      } else {
+        alert("Por favor, selecione o local do encontro.");
+        return;
+      }
+
+      // =========================================================================
+
+      if (!assunto || !local) {
+        alert("Assunto e Local são obrigatórios!");
+        return;
+      }
 
       // if (!data) {
       //   const now = new Date();
@@ -1068,7 +1112,37 @@
         formTitulo.textContent = "Editar Encontro";
         encontroForm.dataset.id = encontro.id;
         assuntoInput.value = encontro.assunto;
-        localInput.value = encontro.local;
+        const localOutroInput = document.getElementById("localOutroInput");
+        const localRadioGroup = document.getElementById("localRadioGroup");
+
+        const localValor = encontro.local;
+        const predefinedLocals = [
+          "Capela de Nossa Senhora Aparecida",
+          "Matriz de Nossa Senhora da Piedade"
+        ];
+
+        const isPredefined = predefinedLocals.includes(localValor);
+
+        if (isPredefined) {
+          // 1. Marca a opção predefinida
+          const radio = localRadioGroup.querySelector(`input[name="localOption"][value="${localValor}"]`);
+          if (radio) radio.checked = true;
+
+          // 2. Esconde o campo "Outro"
+          localOutroInput.style.display = "none";
+          localOutroInput.value = "";
+          localOutroInput.required = false;
+
+        } else {
+          // 1. Marca a opção "Outro"
+          const outroRadio = document.getElementById("outroRadio");
+          if (outroRadio) outroRadio.checked = true;
+
+          // 2. Mostra o campo "Outro" e define o valor
+          localOutroInput.style.display = "block";
+          localOutroInput.value = localValor;
+          localOutroInput.required = true;
+        }
 
         const encontroDate = new Date(encontro.data);
         const formattedDate = encontroDate.toISOString().split("T")[0];
@@ -1105,6 +1179,7 @@
         );
         return;
       }
+      // <td>${e.assunto}</td>
       encontros.forEach((e, i) => {
         const linhaClass = i % 2 ? "tr-1" : "tr-2";
         tbody.insertAdjacentHTML(
@@ -1112,7 +1187,7 @@
           `
           <tr data-id="${e.id}" class="${linhaClass}">
             <td>${formatDate(new Date(e.data))}</td>
-            <td>${e.assunto}</td>
+            <td class="assunto-cell">${e.assunto}</td>
             <td>${e.local}</td>
             <td>
               <button class="icon edit">✏️</button>
@@ -1169,8 +1244,8 @@
     // Seleciona todos os outros elementos que precisam ter a classe 'dark' alternada
     const elementosParaAlterar = document.querySelectorAll(
       "a, body, label, th, td, .titulo, .tr-1, .tr-2, .td2, .circle, " +
-        ".moon-icon, .sun-icon, .encont-label, #crismandoFormDialog, #formDialog, " +
-        "#dataPreview, #faltasList, .modal-content, .close-button, .h2-login, .toggle-password-icon"
+      ".moon-icon, .sun-icon, .encont-label, #crismandoFormDialog, #formDialog, " +
+      "#dataPreview, #faltasList, .modal-content, .close-button, .h2-login, .toggle-password-icon"
     );
 
     // --- Caminhos para as imagens ---
