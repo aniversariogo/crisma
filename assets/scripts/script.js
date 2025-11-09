@@ -19,6 +19,7 @@
       window.location.pathname !== "/index.html" &&
       !isLoggedIn
     ) {
+      document.body.style.display = 'none';
       window.location.href = "/"; // Redireciona para a página de login
       return false;
     }
