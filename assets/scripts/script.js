@@ -1,5 +1,25 @@
 // script aqui
 (() => {
+  // Spin
+  const body = document.querySelector('body');
+  const rotation = document.getElementById('rotation');
+
+  function ativarRotacao() {
+    if (rotation) {
+      rotation.style.opacity = '1';
+      rotation.style.pointerEvents = 'visible';
+      body.style.pointerEvents = 'none';
+    }
+  }
+
+  function desativarRotacao() {
+    if (rotation) {
+      rotation.style.opacity = '0';
+      rotation.style.pointerEvents = 'none';
+      body.style.pointerEvents = 'visible';
+    }
+  }
+
   /* ----------  util ---------- */
   const $ = (s) => document.querySelector(s);
   const $$ = (s) => [...document.querySelectorAll(s)];
@@ -29,6 +49,7 @@
         window.location.pathname === "/index.html") &&
       isLoggedIn
     ) {
+      ativarRotacao();
       window.location.href = "/assets/pages/inicio.html";
       return false;
     }
@@ -58,6 +79,8 @@
 
         errorMessageEl.textContent = ""; // Limpa mensagens de erro anteriores
 
+        ativarRotacao();
+
         try {
           const response = await fetch(`${API_BASE_URL}/login`, {
             method: "POST",
@@ -72,6 +95,7 @@
           if (data.success) {
             localStorage.setItem("loggedIn", "true"); // Marca o usuário como logado
             window.location.href = "/assets/pages/inicio.html"; // Redireciona para a página principal
+            return;
           } else {
             errorMessageEl.textContent =
               data.message || "Erro no login. Tente novamente.";
@@ -80,6 +104,8 @@
           console.error("Erro de rede ou servidor:", error);
           errorMessageEl.textContent =
             "Erro ao conectar com o servidor. Tente novamente.";
+        } finally {
+          desativarRotacao();
         }
       });
     }
@@ -168,8 +194,23 @@
     let currentCrismandoId = null;
     let currentActionType = null; // 'addFalta' ou 'removeFalta'
 
+    function closeEncontroSelectionModal() {
+      // 1. Aplica a transição suave (opacidade e bloqueio de interação)
+      encontroSelectionModal.style.opacity = '0';
+      encontroSelectionModal.style.pointerEvents = 'none';
+      encontroSelectionModal.style.zIndex = '-1'; 
+
+      document.body.classList.remove("modal-open");
+      encontroSelectionModal.classList.remove("modal-open");
+
+      // 3. Limpa estados
+      currentCrismandoId = null;
+      currentActionType = null;
+    }
+
     // Função para buscar e renderizar todos os dados
     async function fetchAndRenderData() {
+      ativarRotacao();
       try {
         const [alunosResponse, encontrosResponse] = await Promise.all([
           fetch(`${API_BASE_URL}/crismandos`),
@@ -191,6 +232,8 @@
         alert(
           "Erro ao carregar dados do servidor. Verifique se o servidor está rodando e a conexão com o banco de dados."
         );
+      } finally {
+        desativarRotacao();
       }
     }
 
@@ -269,11 +312,11 @@
     }
 
     // Função para buscar SOMENTE as faltas do crismando e popular o modal (para Remover falta)
-    // Função para buscar SOMENTE as faltas do crismando e popular o modal (para Remover falta)
     async function fetchFaltasDoCrismandoAndPopulateModal(crismandoId) {
       encontrosCheckboxesDiv.innerHTML = "";
       confirmSelectionBtn.disabled = true; // Desabilita por padrão até ter faltas
 
+      ativarRotacao();
       try {
         const response = await fetch(
           `${API_BASE_URL}/crismandos/${crismandoId}/faltas`
@@ -318,57 +361,16 @@
         console.error("Erro ao buscar faltas para remoção:", error);
         encontrosCheckboxesDiv.innerHTML = `<p>Erro ao carregar faltas para remoção: ${error.message}. Tente novamente.</p>`;
         confirmSelectionBtn.disabled = true; // Em caso de erro, desabilita
+      } finally {
+        desativarRotacao();
       }
     }
-
-    // async function fetchFaltasDoCrismandoAndPopulateModal(crismandoId) {
-    //     encontrosCheckboxesDiv.innerHTML = '';
-    //     confirmSelectionBtn.disabled = true; // Desabilita por padrão até ter faltas
-
-    //     try {
-    //         const response = await fetch(`${API_BASE_URL}/crismandos/${crismandoId}/faltas`);
-    //         if (!response.ok) {
-    //             const errorText = await response.text();
-    //             throw new Error(`Erro ao carregar faltas específicas do crismando para remoção: ${response.status} - ${errorText}`);
-    //         }
-    //         const faltasDoCrismando = await response.json();
-    //         console.log(`Faltas do crismando ${crismandoId} para remoção:`, faltasDoCrismando); // LOG DE DEBUG
-
-    //         if (faltasDoCrismando.length === 0) {
-    //             encontrosCheckboxesDiv.innerHTML = '<p>Este crismando não possui faltas registradas individualmente que possam ser removidas.</p>';
-    //             confirmSelectionBtn.disabled = true; // Garante que o botão continue desabilitado
-    //         } else {
-    //             confirmSelectionBtn.disabled = false; // Habilita o botão se houver faltas
-    //             faltasDoCrismando.forEach(falta => {
-    //                 const dataFormatada = new Date(falta.data).toLocaleDateString('pt-BR', {
-    //                     day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
-    //                 });
-    //                 const label = document.createElement('label');
-    //                 label.innerHTML = `
-    //                     <input type="radio" name="encontro" value="${falta.encontro_id}">
-    //                     ${falta.assunto} (${dataFormatada}) - ${falta.local}
-    //                 `;
-    //                 encontrosCheckboxesDiv.appendChild(label);
-    //             });
-    //         }
-    //     } catch (error) {
-    //         console.error('Erro ao buscar faltas para remoção:', error);
-    //         encontrosCheckboxesDiv.innerHTML = `<p>Erro ao carregar faltas para remoção: ${error.message}. Tente novamente.</p>`;
-    //         confirmSelectionBtn.disabled = true; // Em caso de erro, desabilita
-    //     }
-    // }
 
     // Abre o formulário para adicionar/editar crismando
     btnNovoCrismando.addEventListener("click", () => {
       crismandoForm.reset();
       crismandoFormTitulo.textContent = "Novo Crismando";
       crismandoForm.dataset.id = "";
-      // faltasCrismandoInput.value = 0;
-
-      // Ensure faltas input is visible and enabled when adding new crismando
-      // faltasCrismandoInput.style.display = "block";
-      // document.getElementById("labelFaltasCrismando").style.display = "block";
-      // faltasCrismandoInput.disabled = false;
 
       crismandoDialog.showModal();
     });
@@ -383,6 +385,8 @@
         alert("O nome do crismando é obrigatório!");
         return;
       }
+
+      ativarRotacao();
 
       try {
         let response;
@@ -427,52 +431,10 @@
       } catch (error) {
         console.error(`Erro ao salvar crismando:`, error);
         alert(`Erro ao salvar crismando: ${error.message}`);
+      } finally {
+        desativarRotacao();
       }
     });
-
-    // crismandoForm.addEventListener("submit", async (event) => {
-    //   event.preventDefault();
-    //   const id = crismandoForm.dataset.id;
-    //   const nome = nomeCrismandoInput.value.trim();
-    //   // let faltas = parseInt(faltasCrismandoInput.value, 10) || 0;
-
-    //   if (!nome) {
-    //     alert("O nome do crismando é obrigatório!");
-    //     return;
-    //   }
-
-    //   try {
-    //     let response;
-    //     if (id) {
-    //       // Edição de crismando: ONLY SEND NOME
-    //       response = await fetch(`${API_BASE_URL}/crismandos/${id}`, {
-    //         method: "PUT",
-    //         headers: { "Content-Type": "application/json" },
-    //         body: JSON.stringify({ nome: nome }),
-    //       });
-    //     } else {
-    //       // Novo crismando: Send nome and initial faltas
-    //       response = await fetch(`${API_BASE_URL}/crismandos`, {
-    //         method: "POST",
-    //         headers: { "Content-Type": "application/json" },
-    //         body: JSON.stringify({
-    //           nome : nome,
-    //         }),
-    //       });
-    //     }
-
-    //     if (!response.ok) {
-    //       const errorData = await response.json();
-    //       throw new Error(errorData.error || `Erro HTTP: ${response.status}`);
-    //     }
-
-    //     crismandoDialog.close();
-    //     await fetchAndRenderData();
-    //   } catch (error) {
-    //     console.error("Erro ao salvar crismando:", error);
-    //     alert(`Erro ao salvar crismando: ${error.message}`);
-    //   }
-    // });
 
     // Cancelar formulário
     cancelarCrismandoBtn.addEventListener("click", () => {
@@ -527,13 +489,6 @@
         crismandoForm.dataset.id = crismando.id;
         nomeCrismandoInput.value = crismando.nome;
 
-        // Hide and disable faltas input when editing
-        // faltasCrismandoInput.value = crismando.faltas; // Still set value for consistency
-
-        // faltasCrismandoInput.style.display = "none";
-        // document.getElementById("labelFaltasCrismando").style.display = "none";
-        // faltasCrismandoInput.disabled = true;
-
         crismandoDialog.showModal();
       } else if (target.classList.contains("del-crismando")) {
         if (
@@ -582,6 +537,7 @@
           return;
         }
         const encontroId = selectedRadio.value;
+        ativarRotacao();
         try {
           const response = await fetch(`${API_BASE_URL}/faltas`, {
             method: "POST",
@@ -604,26 +560,14 @@
             return;
           }
 
-          // if (!response.ok) {
-          //   const errorData = await response.json();
-          //   // O servidor está retornando status 409 quando a falta já existe.
-          //   if (response.status === 409) {
-          //     alert(errorData.message);
-          //   } else {
-          //     throw new Error(
-          //       errorData.message ||
-          //         `Erro ao adicionar falta: ${response.status}`
-          //     );
-          //   }
-          //   return;
-          // }
-
           alert(`Falta adicionada com sucesso para ${crismando.nome}!`);
           encontroSelectionModal.style.display = "none"; // CORRIGIDO AQUI
           fetchAndRenderData();
         } catch (error) {
           console.error("Erro ao adicionar falta:", error);
           alert(`Erro ao adicionar falta: ${error.message}`);
+        } finally {
+          desativarRotacao();
         }
       } else if (currentActionType === "removeFalta") {
         const selectedCheckboxes = $$('input[name="encontro"]:checked');
@@ -636,6 +580,7 @@
           return;
         }
 
+        ativarRotacao();
         try {
           // ALTERAÇÃO CRUCIAL: Mudar o método para 'POST' e a URL para a nova rota
           const response = await fetch(`${API_BASE_URL}/faltas/remover`, {
@@ -664,140 +609,11 @@
         } catch (error) {
           console.error("Erro ao retirar falta:", error);
           alert(`Erro ao retirar falta: ${error.message}`);
+        } finally {
+          desativarRotacao();
         }
       }
     });
-
-    // confirmSelectionBtn.addEventListener("click", async () => {
-    //   const crismando = alunos.find((a) => a.id == currentCrismandoId);
-    //   if (!crismando) {
-    //     alert("Crismando não encontrado.");
-    //     return;
-    //   }
-
-    //   if (currentActionType === "addFalta") {
-    //     const selectedEncontro = $('input[name="encontro"]:checked');
-    //     if (!selectedEncontro) {
-    //       alert("Por favor, selecione um encontro para adicionar a falta.");
-    //       return;
-    //     }
-    //     const encontroId = selectedEncontro.value;
-    //     try {
-    //       const response = await fetch(`${API_BASE_URL}/faltas`, {
-    //         method: "POST",
-    //         headers: {
-    //           "Content-Type": "application/json",
-    //         },
-    //         body: JSON.stringify({
-    //           crismando_id: parseInt(currentCrismandoId),
-    //           encontro_id: parseInt(encontroId),
-    //         }),
-    //       });
-
-    //       if (!response.ok) {
-    //         const errorData = await response.json();
-    //         throw new Error(
-    //           errorData.message || `Erro ao adicionar falta: ${response.status}`
-    //         );
-    //       }
-
-    //       alert(`Falta adicionada com sucesso para ${crismando.nome}!`);
-    //       encontroSelectionModal.close();
-    //       fetchAndRenderData();
-    //     } catch (error) {
-    //       console.error("Erro ao adicionar falta:", error);
-    //       alert(`Erro ao adicionar falta: ${error.message}`);
-    //     }
-    //   } else if (currentActionType === "removeFalta") {
-    //     const selectedCheckboxes = $$('input[name="encontro"]:checked');
-    //     const encontrosIds = selectedCheckboxes.map((cb) => parseInt(cb.value));
-
-    //     if (encontrosIds.length === 0) {
-    //       alert(
-    //         "Por favor, selecione pelo menos um encontro para retirar a falta."
-    //       );
-    //       return;
-    //     }
-
-    //     try {
-    //       const response = await fetch(`${API_BASE_URL}/faltas`, {
-    //         method: "DELETE",
-    //         headers: {
-    //           "Content-Type": "application/json",
-    //         },
-    //         body: JSON.stringify({
-    //           crismando_id: parseInt(currentCrismandoId),
-    //           encontros_ids: encontrosIds,
-    //         }),
-    //       });
-
-    //       if (!response.ok) {
-    //         const errorData = await response.json();
-    //         throw new Error(
-    //           errorData.error || `Erro ao retirar falta: ${response.status}`
-    //         );
-    //       }
-
-    //       alert(
-    //         `${encontrosIds.length} falta(s) removida(s) com sucesso para ${crismando.nome}!`
-    //       );
-    //       encontroSelectionModal.close();
-    //       fetchAndRenderData();
-    //     } catch (error) {
-    //       console.error("Erro ao retirar falta:", error);
-    //       alert(`Erro ao retirar falta: ${error.message}`);
-    //     }
-    //   }
-
-    //   currentCrismandoId = null;
-    //   currentActionType = null;
-    // });
-
-    // confirmSelectionBtn.addEventListener('click', async () => {
-    //   const selectedRadio = document.querySelector('input[name="encontro"]:checked');
-    //   if (!selectedRadio) {
-    //     alert('Por favor, selecione um encontro.');
-    //     return;
-    //   }
-    //   const encontroId = selectedRadio.value;
-
-    //   if (!currentCrismandoId || !currentActionType) {
-    //     alert('Erro interno: Crismando ou ação não definidos.');
-    //     return;
-    //   }
-
-    //   try {
-    //     let response;
-    //     if (currentActionType === 'addFalta') {
-    //       response = await fetch(`${API_BASE_URL}/faltas`, {
-    //         method: 'POST',
-    //         headers: { 'Content-Type': 'application/json' },
-    //         body: JSON.stringify({ crismando_id: currentCrismandoId, encontro_id: encontroId })
-    //       });
-    //     } else if (currentActionType === 'removeFalta') {
-    //       response = await fetch(`${API_BASE_URL}/faltas`, {
-    //         method: 'DELETE',
-    //         headers: { 'Content-Type': 'application/json' },
-    //         body: JSON.stringify({ crismando_id: currentCrismandoId, encontro_id: encontroId })
-    //       });
-    //     }
-
-    //     const data = await response.json();
-    //     if (response.ok) {
-    //       alert(data.message);
-    //       encontroSelectionModal.style.display = 'none';
-    //       await fetchAndRenderData(); // Atualiza a lista de crismandos e a tabela completa
-    //     } else {
-    //       alert(`Erro: ${data.error || 'Erro desconhecido'}`);
-    //     }
-    //   } catch (error) {
-    //     console.error('Erro ao registrar/remover falta:', error);
-    //     alert('Erro de conexão ao processar falta.');
-    //   } finally {
-    //     currentCrismandoId = null;
-    //     currentActionType = null;
-    //   }
-    // });
 
     // Função para exibir os detalhes das faltas (para o "olhinho" 👁️)
     async function displayFaltasDetails(crismandoId, crismandoNome) {
@@ -805,6 +621,7 @@
       faltasListDiv.innerHTML = "<p>Carregando faltas...</p>"; // Mensagem de carregamento
       faltasDetailsModal.style.display = "block"; // Abre o modal
 
+      ativarRotacao();
       try {
         const response = await fetch(
           `${API_BASE_URL}/crismandos/${crismandoId}/faltas`
@@ -855,6 +672,8 @@
           error
         );
         faltasListDiv.innerHTML = `<p style="color: red;">Erro ao carregar detalhes das faltas: ${error.message}. Verifique o console para mais detalhes.</p>`;
+      } finally {
+        desativarRotacao();
       }
     }
 
@@ -876,6 +695,8 @@
 
     // Funções de API (mantidas como estão)
     async function updateCrismando(id, nome, faltas, presencas) {
+      ativarRotacao();
+
       try {
         const response = await fetch(`${API_BASE_URL}/crismandos/${id}`, {
           method: "PUT",
@@ -890,10 +711,13 @@
       } catch (error) {
         console.error("Erro ao atualizar crismando:", error);
         alert(`Erro ao atualizar crismando: ${error.message}`);
+      } finally {
+        desativarRotacao();
       }
     }
 
     async function deleteCrismando(id) {
+      ativarRotacao();
       try {
         const response = await fetch(`${API_BASE_URL}/crismandos/${id}`, {
           method: "DELETE",
@@ -906,11 +730,14 @@
       } catch (error) {
         console.error("Erro ao deletar crismando:", error);
         alert(`Erro ao deletar crismando: ${error.message}`);
+      } finally {
+        desativarRotacao();
       }
     }
 
     // Lidar com o botão de gerar relatório
     generateReportBtn.addEventListener("click", async () => {
+      ativarRotacao();
       try {
         alert("Gerando relatório... Isso pode levar alguns segundos.");
         const response = await fetch(`${API_BASE_URL}/report/pdf`);
@@ -934,6 +761,8 @@
       } catch (error) {
         console.error("Erro ao gerar relatório:", error);
         alert(`Erro ao gerar relatório: ${error.message}`);
+      } finally {
+        desativarRotacao();
       }
     });
 
@@ -985,6 +814,7 @@
     let encontros = [];
 
     async function fetchAndRenderEncontros() {
+      ativarRotacao();
       try {
         const response = await fetch(`${API_BASE_URL}/encontros`);
         if (!response.ok) throw new Error("Erro ao carregar encontros");
@@ -996,6 +826,8 @@
         alert(
           "Erro ao carregar encontros do servidor. Verifique se o servidor está rodando."
         );
+      } finally {
+        desativarRotacao();
       }
     }
 
@@ -1066,6 +898,7 @@
         return;
       }
 
+      ativarRotacao();
       try {
         let response;
         if (id) {
@@ -1093,6 +926,8 @@
       } catch (error) {
         console.error("Erro ao salvar encontro:", error);
         alert(`Erro ao salvar encontro: ${error.message}`);
+      } finally {
+        desativarRotacao();
       }
     });
 
@@ -1201,6 +1036,7 @@
     }
 
     async function deleteEncontro(id) {
+      ativarRotacao();
       try {
         const response = await fetch(`${API_BASE_URL}/encontros/${id}`, {
           method: "DELETE",
@@ -1214,6 +1050,8 @@
       } catch (error) {
         console.error("Erro ao deletar encontro:", error);
         alert(`Erro ao deletar encontro: ${error.message}`);
+      } finally {
+        desativarRotacao();
       }
     }
 
@@ -1314,46 +1152,4 @@
     // Inicia o tema da página
     inicializarTema();
   });
-
-  // document.addEventListener('DOMContentLoaded', () => {
-  //   let themeButton = document.getElementById('theme');
-  //   let elementosParaAlterar = document.querySelectorAll('a, body, label, th, td, .titulo, .tr-1, .tr-2, .td2, .circle, .moon-icon, .sun-icon, .encont-label, .logo-capela, #crismandoFormDialog, #formDialog, #dataPreview, #faltasList, .modal-content, .close-button, .h2-login, .toggle-password-icon');
-
-  //   let arrowIcon = document.getElementById('arrowIcon');
-  //   let logoCapela = document.getElementById('logoCapela');
-
-  //   const savedTheme = localStorage.getItem('themePreference');
-
-  //   if (savedTheme === 'dark') {
-  //     themeButton.classList.add('dark');
-  //     elementosParaAlterar.forEach(elemento => {
-  //       elemento.classList.add('dark');
-  //     });
-
-  //   } else {
-  //     themeButton.classList.remove('dark');
-  //     elementosParaAlterar.forEach(elemento => {
-  //       elemento.classList.remove('dark');
-  //     });
-  //   }
-
-  //   themeButton.addEventListener('click', () => {
-  //     themeButton.classList.toggle('dark');
-  //     elementosParaAlterar.forEach(elemento => {
-  //       elemento.classList.toggle('dark');
-  //     });
-
-  //     if (themeButton.classList.contains('dark')) {
-  //       localStorage.setItem('themePreference', 'dark');
-
-  //       if (arrowIcon) arrowIcon.src = arrowIcon.src.replace("arrow-dark-icon.svg", "arrow-light-icon.svg");
-  //       if (logoCapela) logoCapela.src = logoCapela.src.replace("capela-dark.png", "logo-capela.png");
-  //     } else {
-  //       localStorage.setItem('themePreference', 'light');
-
-  //       if (arrowIcon) arrowIcon.src = arrowIcon.src.replace("arrow-light-icon.svg", "arrow-dark-icon.svg");
-  //       if (logoCapela) logoCapela.src = logoCapela.src.replace("logo-capela.png", "capela-dark.png");
-  //     }
-  //   });
-  // });
 })();
