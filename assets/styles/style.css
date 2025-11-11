@@ -1320,6 +1320,10 @@ body.dark .link {
     .br-mobile {
         display: block;
     }
+
+    .rotation {
+        padding: 20px;
+    }
 }
 
 @media screen and (max-width: 1024px) and (orientation: landscape) {
@@ -1346,5 +1350,9 @@ body.dark .link {
     .modal-open {
         overflow: hidden;
         position: fixed;
+    }
+
+    .rotation {
+        padding: 20px;
     }
 }
