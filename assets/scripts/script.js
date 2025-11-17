@@ -254,6 +254,8 @@
         const presencasCalculadas = encontros.length - aluno.faltas;
         const linhaClass = i % 2 ? "tr-1" : "tr-2";
 
+        const faltasStyle = aluno.faltas >= 15 ? 'style="color: red;"' : '';
+
         tbody.insertAdjacentHTML(
           "beforeend",
           `
@@ -262,7 +264,7 @@
             <td>
               <button class="icon diminuir-faltas" data-crismando-id="${aluno.id
           }" ${aluno.faltas <= 0 ? "disabled" : ""}>-</button>
-              <span class="faltas-valor">${aluno.faltas
+              <span class="faltas-valor" ${faltasStyle}>${aluno.faltas
           }</span> <button class="icon aumentar-faltas" data-crismando-id="${aluno.id
           }">+</button>
             </td>
