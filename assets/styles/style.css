@@ -1323,6 +1323,7 @@ body.dark .link {
 
     .rotation {
         padding: 20px;
+        border-width: 3px;
     }
 }
 
@@ -1354,5 +1355,6 @@ body.dark .link {
 
     .rotation {
         padding: 20px;
+        border-width: 3px;
     }
 }
