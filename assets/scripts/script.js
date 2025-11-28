@@ -195,6 +195,7 @@
     let encontros = [];
     let currentCrismandoId = null;
     let currentActionType = null; // 'addFalta' ou 'removeFalta'
+    let currentCrismandoNome = "";
 
     function openEncontroSelectionModal(listaDeEncontros = encontros) {
       const modal = $("#encontroSelectionModal");
