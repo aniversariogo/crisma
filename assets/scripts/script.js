@@ -559,11 +559,13 @@
               `Erro ao adicionar falta: ${data.message || data.error || "Erro desconhecido."
               }`
             );
+
             return;
           }
 
           alert(`Falta adicionada com sucesso para ${crismando.nome}!`);
-          encontroSelectionModal.style.display = "none"; // CORRIGIDO AQUI
+          closeEncontroSelectionModal();
+          // encontroSelectionModal.style.display = "none"; // CORRIGIDO AQUI
           fetchAndRenderData();
         } catch (error) {
           console.error("Erro ao adicionar falta:", error);
@@ -606,7 +608,8 @@
           alert(
             `${encontrosIds.length} falta(s) removida(s) com sucesso para ${crismando.nome}!`
           );
-          encontroSelectionModal.style.display = "none";
+          // encontroSelectionModal.style.display = "none";
+          closeEncontroSelectionModal();
           fetchAndRenderData();
         } catch (error) {
           console.error("Erro ao retirar falta:", error);
