@@ -199,7 +199,7 @@
     function openEncontroSelectionModal(listaDeEncontros = encontros) {
       const modal = $("#encontroSelectionModal");
       const container = $("#encontrosCheckboxContainer");
-      const titulo = encontroSelectionModalTitle;
+      const titulo = $("#encontroSelectionModalTitle"); // Use $ para buscar o elemento
 
       // Limpa o container anterior
       container.innerHTML = "";
@@ -231,7 +231,8 @@
           const dataFormatada = formatDate(encontro.data);
 
           const span = document.createElement("span");
-          const assuntoLimpo = encontro.assunto.replace(/<[^>]*>/g, "");
+          // Verifica se assunto existe e se é uma string antes de tentar o replace
+          const assuntoLimpo = encontro.assunto ? encontro.assunto.replace(/<[^>]*>/g, "") : "Sem Assunto";
           span.innerHTML = `<strong>${dataFormatada}</strong> - ${assuntoLimpo}`;
 
           label.appendChild(checkbox);
@@ -445,6 +446,7 @@
 
       try {
         // 1. Busca as faltas existentes
+        console.log(`Buscando faltas do crismando ${crismandoId}...`);
         const faltasExistentes = await fetchCrismandoFaltas(crismandoId);
 
         if (faltasExistentes.length === 0) {
@@ -454,9 +456,9 @@
 
         // 2. Abre o modal passando APENAS as faltas existentes
         openEncontroSelectionModal(faltasExistentes);
-        // encontroSelectionModal(faltasExistentes);
 
       } catch (error) {
+        console.error("Erro em handleRemoveFaltaClick:", error);
         alert("Erro ao preparar a remoção de faltas. Tente novamente.");
       } finally {
         desativarRotacao();
@@ -563,20 +565,21 @@
         await fetchAllEncontrosAndPopulateModal();
         encontroSelectionModal.style.display = "block"; // CORRIGIDO AQUI
       } else if (target.classList.contains("diminuir-faltas")) {
-        currentCrismandoId = crismandoId;
-        currentActionType = "removeFalta";
+        // currentCrismandoId = crismandoId;
+        // currentActionType = "removeFalta";
 
-        document.body.classList.add("modal-open");
-        encontroSelectionModal.classList.add("modal-open");
+        // document.body.classList.add("modal-open");
+        // encontroSelectionModal.classList.add("modal-open");
 
-        encontroSelectionModalTitle.textContent =
-          "Selecione a Falta para Remover"; // Título para remoção
+        // encontroSelectionModalTitle.textContent =
+        //   "Selecione a Falta para Remover"; // Título para remoção
 
-        document.querySelector("#encontroSelectionModal .mdl-p").textContent =
-          "Selecione uma ou mais faltas para remover:";
+        // document.querySelector("#encontroSelectionModal .mdl-p").textContent =
+        //   "Selecione uma ou mais faltas para remover:";
 
-        await fetchFaltasDoCrismandoAndPopulateModal(crismandoId); // Mostra SOMENTE as faltas do crismando
-        encontroSelectionModal.style.display = "block";
+        // await fetchFaltasDoCrismandoAndPopulateModal(crismandoId); // Mostra SOMENTE as faltas do crismando
+        // encontroSelectionModal.style.display = "block";
+        handleRemoveFaltaClick(crismandoId, crismandoNome);
       } else if (target.classList.contains("view-faltas")) {
         currentCrismandoId = crismandoId;
         // Linha removida: toggleFaltasCountVisibility(crismandoId, true);
@@ -676,8 +679,8 @@
           method: method,
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            crismando_id: currentCrismandoId,
-            encontros_ids: encontrosIds, // Array de IDs de encontros a remover
+            crismando_id: currentCrismandoId, // Variável global agora declarada
+            encontros_ids: encontrosIds,
             username: username
           }),
         });
@@ -687,9 +690,8 @@
         if (!response.ok) {
           throw new Error(data.error || "Erro desconhecido ao remover falta(s).");
         }
-
-        handleRemoveFaltaClick(crismandoId, crismandoNome);
-        successMessage = `Foram removidas ${data.removed_faltas.length} falta(s) de ${crismando.nome}.`;
+        // CORREÇÃO DO ERRO: Usando a variável global currentCrismandoNome
+        successMessage = `Foram removidas ${data.removed_faltas.length} falta(s) de ${currentCrismandoNome}.`;
       }
     });
 
