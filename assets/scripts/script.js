@@ -669,8 +669,6 @@
           desativarRotacao();
         }
       } else if (currentActionType === "removeFalta") {
-        handleRemoveFaltaClick(crismandoId, crismandoNome);
-
         url = `${API_BASE_URL}/faltas/remover`;
         method = "POST";
 
@@ -689,6 +687,8 @@
         if (!response.ok) {
           throw new Error(data.error || "Erro desconhecido ao remover falta(s).");
         }
+
+        handleRemoveFaltaClick(crismandoId, crismandoNome);
         successMessage = `Foram removidas ${data.removed_faltas.length} falta(s) de ${crismando.nome}.`;
       }
     });
