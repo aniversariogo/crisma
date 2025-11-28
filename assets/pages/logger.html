@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Crisma - Capela Nossa Senhora Aparecida</title>
+    <link rel="icon" href="/assets/images/icons/logo-ns-ap.png" type="image/png" />
+    <link rel="stylesheet" href="/assets/styles/style.css" />
+</head>
+
+<body>
+    <main>
+
+        <a href="/assets/pages/encontros.html" class="link">
+            <img src="/assets/images/icons/arrow-dark-icon.svg" alt="seta-icon" class="seta-icon-ind" id="arrowIcon"
+                style="rotate: 0deg; right: 30px; z-index: 1;">
+            <p style="position: absolute; top: 0px; right: 45px; text-decoration: underline; padding: 5px 30px 5px 10px;"
+                class="link-p">Encontros</p>
+        </a>
+
+        <div class="btn-theme" id="theme" style="z-index: 1000">
+            <img src="/assets/images/icons/sun-icon.svg" width="28px" alt="sun-icon" class="sun-icon" />
+            <div class="circle"></div>
+            <img src="/assets/images/icons/moon-icon.svg" width="30px" alt="moon-icon" class="moon-icon" />
+        </div>
+
+        <button id="logoutBtn" class="logout-button">Sair</button>
+
+        <article class="tabela-crismandos">
+            <table cellpadding="10" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th colspan="4" class="titulo">Registros de Atividade</th>
+                    </tr>
+                    <tr class="tr-1">
+                        <th>Data/Hora</th>
+                        <th>Usuário</th>
+                        <th>Tipo de Ação</th>
+                        <th>Detalhes</th>
+                    </tr>
+                </thead>
+                <tbody id="logsTbody">
+                </tbody>
+                <tfoot>
+                </tfoot>
+            </table>
+        </article>
+    </main>
+
+    <div class="rotation-box" id="rotation">
+        <div class="rotation"></div>
+    </div>
+
+    <footer>
+        <img src="/assets/images/capela-dark.png" alt="logo-capela" class="logo-capela" id="logoCapela" />
+    </footer>
+
+    <script src="/assets/scripts/script.js"></script>
+</body>
+
+</html>
