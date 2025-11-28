@@ -4,6 +4,8 @@
   const body = document.querySelector('body');
   const rotation = document.getElementById('rotation');
 
+  // openEncontroSelectionModal
+
   function ativarRotacao() {
     if (rotation) {
       rotation.style.opacity = '1';
@@ -194,6 +196,57 @@
     let currentCrismandoId = null;
     let currentActionType = null; // 'addFalta' ou 'removeFalta'
 
+    function openEncontroSelectionModal(listaDeEncontros = encontros) {
+      const modal = $("#encontroSelectionModal");
+      const container = $("#encontrosCheckboxContainer");
+      const titulo = encontroSelectionModalTitle;
+
+      // Limpa o container anterior
+      container.innerHTML = "";
+
+      // Atualiza o título baseado na ação
+      if (currentActionType === "addFalta") {
+        titulo.textContent = `Marcar falta para ${currentCrismandoNome}:`;
+      } else if (currentActionType === "removeFalta") {
+        titulo.textContent = `Remover falta(s) de ${currentCrismandoNome}:`;
+      }
+
+      // Desabilita o botão se não houver encontros/faltas para selecionar
+      confirmSelectionBtn.disabled = listaDeEncontros.length === 0;
+
+      if (listaDeEncontros.length === 0) {
+        container.innerHTML = `<p>Nenhum ${currentActionType === "addFalta" ? "encontro" : "falta"} disponível para seleção.</p>`;
+      } else {
+        // Renderiza os Checkboxes (USANDO listaDeEncontros)
+        listaDeEncontros.forEach(encontro => {
+          const label = document.createElement("label");
+          label.classList.add('checkbox-mobile-faltas');
+
+          const checkbox = document.createElement("input");
+          checkbox.type = "checkbox";
+          // O valor do checkbox deve ser o ID do encontro
+          checkbox.value = encontro.id;
+          checkbox.name = "encontroId";
+
+          const dataFormatada = formatDate(encontro.data);
+
+          const span = document.createElement("span");
+          const assuntoLimpo = encontro.assunto.replace(/<[^>]*>/g, "");
+          span.innerHTML = `<strong>${dataFormatada}</strong> - ${assuntoLimpo}`;
+
+          label.appendChild(checkbox);
+          label.appendChild(span);
+          container.appendChild(label);
+        });
+      }
+
+      // Exibir o modal
+      if (modal) {
+        modal.showModal();
+        document.body.classList.add("modal-open");
+      }
+    }
+
     function closeEncontroSelectionModal() {
       // 1. Aplica a transição suave (opacidade e bloqueio de interação)
       encontroSelectionModal.style.opacity = '0';
@@ -363,6 +416,48 @@
         console.error("Erro ao buscar faltas para remoção:", error);
         encontrosCheckboxesDiv.innerHTML = `<p>Erro ao carregar faltas para remoção: ${error.message}. Tente novamente.</p>`;
         confirmSelectionBtn.disabled = true; // Em caso de erro, desabilita
+      } finally {
+        desativarRotacao();
+      }
+    }
+
+    async function fetchCrismandoFaltas(crismandoId) {
+      try {
+        // Rota que busca as faltas (exigirá uma rota GET no seu server.js)
+        const response = await fetch(`${API_BASE_URL}/crismandos/${crismandoId}/faltas`);
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`Falha ao buscar faltas do crismando: ${response.status} - ${errorText}`);
+        }
+        return await response.json(); // Retorna um array de encontros onde o crismando faltou
+      } catch (error) {
+        console.error("Erro ao buscar faltas:", error);
+        // Retorna um array vazio em caso de erro
+        return [];
+      }
+    }
+
+    async function handleRemoveFaltaClick(crismandoId, crismandoNome) {
+      ativarRotacao();
+      currentCrismandoId = crismandoId;
+      currentCrismandoNome = crismandoNome;
+      currentActionType = "removeFalta";
+
+      try {
+        // 1. Busca as faltas existentes
+        const faltasExistentes = await fetchCrismandoFaltas(crismandoId);
+
+        if (faltasExistentes.length === 0) {
+          alert(`O crismando ${crismandoNome} não possui nenhuma falta para remover.`);
+          return;
+        }
+
+        // 2. Abre o modal passando APENAS as faltas existentes
+        openEncontroSelectionModal(faltasExistentes);
+        // encontroSelectionModal(faltasExistentes);
+
+      } catch (error) {
+        alert("Erro ao preparar a remoção de faltas. Tente novamente.");
       } finally {
         desativarRotacao();
       }
@@ -574,49 +669,27 @@
           desativarRotacao();
         }
       } else if (currentActionType === "removeFalta") {
-        const selectedCheckboxes = $$('input[name="encontro"]:checked');
-        const encontrosIds = selectedCheckboxes.map((cb) => parseInt(cb.value));
+        handleRemoveFaltaClick(crismandoId, crismandoNome);
 
-        if (encontrosIds.length === 0) {
-          alert(
-            "Por favor, selecione pelo menos um encontro para retirar a falta."
-          );
-          return;
+        url = `${API_BASE_URL}/faltas/remover`;
+        method = "POST";
+
+        const response = await fetch(url, {
+          method: method,
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            crismando_id: currentCrismandoId,
+            encontros_ids: encontrosIds, // Array de IDs de encontros a remover
+            username: username
+          }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || "Erro desconhecido ao remover falta(s).");
         }
-
-        ativarRotacao();
-        try {
-          // ALTERAÇÃO CRUCIAL: Mudar o método para 'POST' e a URL para a nova rota
-          const response = await fetch(`${API_BASE_URL}/faltas/remover`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              crismando_id: parseInt(currentCrismandoId),
-              encontros_ids: encontrosIds,
-            }),
-          });
-
-          if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(
-              errorData.error || `Erro ao retirar falta: ${response.status}`
-            );
-          }
-
-          alert(
-            `${encontrosIds.length} falta(s) removida(s) com sucesso para ${crismando.nome}!`
-          );
-          // encontroSelectionModal.style.display = "none";
-          closeEncontroSelectionModal();
-          fetchAndRenderData();
-        } catch (error) {
-          console.error("Erro ao retirar falta:", error);
-          alert(`Erro ao retirar falta: ${error.message}`);
-        } finally {
-          desativarRotacao();
-        }
+        successMessage = `Foram removidas ${data.removed_faltas.length} falta(s) de ${crismando.nome}.`;
       }
     });
 
