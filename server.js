@@ -594,7 +594,7 @@ app.get("/api/report/pdf", async (req, res) => {
     const minutes = String(now.getMinutes()).padStart(2, "0");
     const filenameDate = `${year}-${month}-${day}_${hours}-${minutes}`;
 
-    const filename = `relatorio_crisma_${filenameDate}.pdf`;
+    const filename = `relatorio_crisma_capela_${filenameDate}.pdf`;
 
     // Configurar cabeçalhos da resposta para download do PDF
     res.setHeader("Content-Type", "application/pdf");
@@ -607,7 +607,7 @@ app.get("/api/report/pdf", async (req, res) => {
     doc
       .font("Helvetica-Bold")
       .fontSize(18)
-      .text("Relatório de Crismandos - Capela N. S. Aparecida", {
+      .text("Relatório de Crismandos - Capela N. Sra. Aparecida", {
         align: "center",
       });
 
