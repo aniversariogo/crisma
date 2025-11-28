@@ -198,7 +198,7 @@
       // 1. Aplica a transição suave (opacidade e bloqueio de interação)
       encontroSelectionModal.style.opacity = '0';
       encontroSelectionModal.style.pointerEvents = 'none';
-      encontroSelectionModal.style.zIndex = '-1'; 
+      encontroSelectionModal.style.zIndex = '-1';
 
       document.body.classList.remove("modal-open");
       encontroSelectionModal.classList.remove("modal-open");
@@ -1076,6 +1076,59 @@
     }
 
     fetchAndRenderEncontros();
+  }
+
+  async function fetchAndRenderLogs() {
+    // 1. Ativa o spinner de rotação
+    ativarRotacao();
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/logs`);
+      if (!response.ok) {
+        throw new Error("Falha ao carregar logs.");
+      }
+      const logs = await response.json();
+      const logsTbody = document.getElementById("logsTbody");
+      logsTbody.innerHTML = ""; // Limpa a tabela
+
+      logs.forEach((log) => {
+        const row = logsTbody.insertRow();
+        // Formata a data/hora para exibição
+        const formattedDate = new Date(log.timestamp).toLocaleString("pt-BR", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+        });
+
+        row.insertCell().textContent = formattedDate;
+        row.insertCell().textContent = log.username;
+        row.insertCell().textContent = log.action_type;
+        row.insertCell().textContent = log.details;
+      });
+    } catch (error) {
+      console.error("Erro ao renderizar logs:", error);
+    } finally {
+      // 2. Desativa o spinner
+      desativarRotacao();
+    }
+  }
+
+  async function logAction(username, actionType, details) {
+    try {
+      await pool.query(
+        "INSERT INTO logs (username, action_type, details) VALUES ($1, $2, $3)",
+        [username, actionType, details]
+      );
+    } catch (error) {
+      console.error("Erro ao registrar log:", error.message);
+    }
+  }
+
+  if (window.location.pathname.includes("logger.html")) {
+    fetchAndRenderLogs();
   }
 
   // --- Lógica para o tema persistente ---
