@@ -54,23 +54,23 @@ const USERS = {
 
 // ---------- FUNÇÃO AUXILIAR DE LOG (LOGGER) ----------
 async function logAction(username, actionType, details) {
-    const logUsername = username || 'DESCONHECIDO'; // Fallback se o username não for fornecido
-    try {
-        await db.query(
-            "INSERT INTO logs (username, action_type, details) VALUES ($1, $2, $3)",
-            [logUsername, actionType, details]
-        );
-    } catch (error) {
-        // Apenas loga o erro e não interrompe a operação principal
-        console.error("Erro ao registrar log:", error.message);
-    }
+  const logUsername = username || 'Crisma Capela 2025'; // Fallback se o username não for fornecido
+  try {
+    await db.query(
+      "INSERT INTO logs (username, action_type, details) VALUES ($1, $2, $3)",
+      [logUsername, actionType, details]
+    );
+  } catch (error) {
+    // Apenas loga o erro e não interrompe a operação principal
+    console.error("Erro ao registrar log:", error.message);
+  }
 }
 
 // ---------- Rotas da API ----------
 
 app.get("/api/logs", async (req, res) => {
   try {
-    const result = await db.query("SELECT * FROM logs ORDER BY timestamp DESC"); 
+    const result = await db.query("SELECT * FROM logs ORDER BY timestamp DESC");
     res.json(result.rows);
   } catch (error) {
     console.error("Erro ao buscar logs:", error.message);
@@ -84,7 +84,7 @@ app.post("/api/login", async (req, res) => { // TORNAR ASYNC PARA USAR await log
 
   if (USERS[username] && USERS[username] === password) {
     // LOG DE SUCESSO
-    await logAction(username, 'LOGIN_SUCESSO', `Login bem-sucedido.`); 
+    await logAction(username, 'LOGIN_SUCESSO', `Login bem-sucedido.`);
     // Em um sistema real, aqui você geraria um token JWT ou uma sessão.
     // Para simplicidade, apenas indicamos sucesso.
     res.json({ success: true, message: "Login bem-sucedido!", username: username });
@@ -214,7 +214,7 @@ app.put("/api/crismandos/:id", async (req, res) => {
     // Buscar o nome anterior para o log
     const oldCrismando = await db.query("SELECT nome FROM crismandos WHERE id = $1", [id]);
     const oldName = oldCrismando.rows.length > 0 ? oldCrismando.rows[0].nome : 'Crismando Desconhecido';
-    
+
     // Only update the 'nome' field
     const result = await db.query(
       "UPDATE crismandos SET nome = $1 WHERE id = $2 RETURNING *",
@@ -239,12 +239,12 @@ app.delete("/api/crismandos/:id", async (req, res) => {
   // Assumindo que o username para DELETEs virá de um header ou de um campo na requisição, 
   // mas para esta implementação, será um valor fixo (se você não tiver como enviar do front).
   const username = req.query.username || 'crismacapela25'; // Placeholder: Tente buscar do query ou use o valor fixo
-  
+
   try {
     // Buscar o nome antes de deletar
     const crismandoResult = await db.query("SELECT nome FROM crismandos WHERE id = $1", [id]);
     const crismandoNome = crismandoResult.rows.length > 0 ? crismandoResult.rows[0].nome : `ID ${id}`;
-    
+
     // Primeiro, deletar as faltas associadas a este crismando
     await db.query("DELETE FROM faltas_crismandos WHERE crismando_id = $1", [
       id,
@@ -307,11 +307,11 @@ app.post("/api/faltas", async (req, res) => {
         .status(404)
         .json({ error: "Crismando não encontrado para atualizar faltas." });
     }
-    
+
     // LOG: Buscar nome do crismando e assunto do encontro para um log útil
     const [crismandoRes, encontroRes] = await Promise.all([
-        db.query("SELECT nome FROM crismandos WHERE id = $1", [crismando_id]),
-        db.query("SELECT assunto FROM encontros WHERE id = $1", [encontro_id])
+      db.query("SELECT nome FROM crismandos WHERE id = $1", [crismando_id]),
+      db.query("SELECT assunto FROM encontros WHERE id = $1", [encontro_id])
     ]);
     const crismandoNome = crismandoRes.rows[0]?.nome || `ID ${crismando_id}`;
     const encontroAssunto = stripHtmlTags(encontroRes.rows[0]?.assunto || `ID ${encontro_id}`);
@@ -353,7 +353,7 @@ app.post('/api/faltas/remover', async (req, res) => {
       'UPDATE crismandos SET faltas = faltas - $1 WHERE id = $2',
       [deleteResult.rows.length, crismando_id]
     );
-    
+
     // LOG: Buscar nome do crismando para o log
     const crismandoRes = await db.query("SELECT nome FROM crismandos WHERE id = $1", [crismando_id]);
     const crismandoNome = crismandoRes.rows[0]?.nome || `ID ${crismando_id}`;
