@@ -52,45 +52,17 @@ const USERS = {
   crismacapela25: "202526crisma",
 };
 
-// ---------- FUNÇÃO AUXILIAR DE LOG (LOGGER) ----------
-async function logAction(username, actionType, details) {
-  const logUsername = username || 'Crisma Capela 2025'; // Fallback se o username não for fornecido
-  try {
-    await db.query(
-      "INSERT INTO logs (username, action_type, details) VALUES ($1, $2, $3)",
-      [logUsername, actionType, details]
-    );
-  } catch (error) {
-    // Apenas loga o erro e não interrompe a operação principal
-    console.error("Erro ao registrar log:", error.message);
-  }
-}
-
 // ---------- Rotas da API ----------
 
-app.get("/api/logs", async (req, res) => {
-  try {
-    const result = await db.query("SELECT * FROM logs ORDER BY timestamp DESC");
-    res.json(result.rows);
-  } catch (error) {
-    console.error("Erro ao buscar logs:", error.message);
-    res.status(500).json({ error: "Erro interno do servidor ao buscar logs." });
-  }
-});
-
 // Rota de Login
-app.post("/api/login", async (req, res) => { // TORNAR ASYNC PARA USAR await logAction
+app.post("/api/login", (req, res) => {
   const { username, password } = req.body;
 
   if (USERS[username] && USERS[username] === password) {
-    // LOG DE SUCESSO
-    await logAction(username, 'LOGIN_SUCESSO', `Login bem-sucedido.`);
     // Em um sistema real, aqui você geraria um token JWT ou uma sessão.
     // Para simplicidade, apenas indicamos sucesso.
-    res.json({ success: true, message: "Login bem-sucedido!", username: username });
+    res.json({ success: true, message: "Login bem-sucedido!" });
   } else {
-    // LOG DE FALHA
-    await logAction(username || 'DESCONHECIDO', 'LOGIN_FALHA', `Tentativa de login falhou.`);
     res
       .status(401)
       .json({ success: false, message: "Usuário ou senha inválidos." });
@@ -170,15 +142,12 @@ app.get("/api/crismandos/:crismando_id/faltas", async (req, res) => {
 
 // POST /api/crismandos - Adiciona um novo crismando
 app.post("/api/crismandos", async (req, res) => {
-  const { nome, username } = req.body; // Espera o username para o log
+  const { nome } = req.body;
   try {
     const result = await db.query(
       "INSERT INTO crismandos (nome, faltas, presencas) VALUES ($1, 0, 0) RETURNING *",
       [nome]
     );
-    // LOG
-    await logAction(username, 'ADD_CRISMANDO', `Novo crismando adicionado: ${result.rows[0].nome} (ID: ${result.rows[0].id}).`);
-
     res.status(201).json(result.rows[0]);
   } catch (err) {
     console.error(err);
@@ -202,7 +171,7 @@ app.post("/api/crismandos", async (req, res) => {
 // PUT /api/crismandos/:id - Atualiza um crismando existente
 app.put("/api/crismandos/:id", async (req, res) => {
   const { id } = req.params;
-  const { nome, username } = req.body; // Espera o username para o log
+  const { nome } = req.body; // Only expecting nome from frontend for edits
 
   if (!nome) {
     return res
@@ -211,10 +180,6 @@ app.put("/api/crismandos/:id", async (req, res) => {
   }
 
   try {
-    // Buscar o nome anterior para o log
-    const oldCrismando = await db.query("SELECT nome FROM crismandos WHERE id = $1", [id]);
-    const oldName = oldCrismando.rows.length > 0 ? oldCrismando.rows[0].nome : 'Crismando Desconhecido';
-
     // Only update the 'nome' field
     const result = await db.query(
       "UPDATE crismandos SET nome = $1 WHERE id = $2 RETURNING *",
@@ -223,9 +188,6 @@ app.put("/api/crismandos/:id", async (req, res) => {
     if (result.rows.length === 0) {
       return res.status(404).json({ error: "Crismando não encontrado" });
     }
-    // LOG
-    await logAction(username, 'EDIT_CRISMANDO', `Nome do crismando ID ${id} alterado de '${oldName}' para '${nome}'.`);
-
     res.json(result.rows[0]);
   } catch (err) {
     console.error(err);
@@ -236,15 +198,7 @@ app.put("/api/crismandos/:id", async (req, res) => {
 // DELETE /api/crismandos/:id - Deleta um crismando
 app.delete("/api/crismandos/:id", async (req, res) => {
   const { id } = req.params;
-  // Assumindo que o username para DELETEs virá de um header ou de um campo na requisição, 
-  // mas para esta implementação, será um valor fixo (se você não tiver como enviar do front).
-  const username = req.query.username || 'crismacapela25'; // Placeholder: Tente buscar do query ou use o valor fixo
-
   try {
-    // Buscar o nome antes de deletar
-    const crismandoResult = await db.query("SELECT nome FROM crismandos WHERE id = $1", [id]);
-    const crismandoNome = crismandoResult.rows.length > 0 ? crismandoResult.rows[0].nome : `ID ${id}`;
-
     // Primeiro, deletar as faltas associadas a este crismando
     await db.query("DELETE FROM faltas_crismandos WHERE crismando_id = $1", [
       id,
@@ -257,9 +211,6 @@ app.delete("/api/crismandos/:id", async (req, res) => {
     if (result.rows.length === 0) {
       return res.status(404).json({ error: "Crismando não encontrado" });
     }
-    // LOG
-    await logAction(username, 'DELETE_CRISMANDO', `Crismando ${crismandoNome} (ID: ${id}) deletado.`);
-
     res.json({ message: "Crismando e suas faltas deletados com sucesso!" });
   } catch (err) {
     console.error(err);
@@ -269,7 +220,7 @@ app.delete("/api/crismandos/:id", async (req, res) => {
 
 // POST /api/faltas - Adicionar uma falta para um crismando em um encontro específico
 app.post("/api/faltas", async (req, res) => {
-  const { crismando_id, encontro_id, username } = req.body; // Espera o username para o log
+  const { crismando_id, encontro_id } = req.body;
 
   if (!crismando_id || !encontro_id) {
     return res
@@ -308,17 +259,6 @@ app.post("/api/faltas", async (req, res) => {
         .json({ error: "Crismando não encontrado para atualizar faltas." });
     }
 
-    // LOG: Buscar nome do crismando e assunto do encontro para um log útil
-    const [crismandoRes, encontroRes] = await Promise.all([
-      db.query("SELECT nome FROM crismandos WHERE id = $1", [crismando_id]),
-      db.query("SELECT assunto FROM encontros WHERE id = $1", [encontro_id])
-    ]);
-    const crismandoNome = crismandoRes.rows[0]?.nome || `ID ${crismando_id}`;
-    const encontroAssunto = stripHtmlTags(encontroRes.rows[0]?.assunto || `ID ${encontro_id}`);
-
-    await logAction(username, 'ADD_FALTA', `Falta adicionada a ${crismandoNome} no encontro: '${encontroAssunto}'.`);
-
-
     res.status(201).json({
       message: "Falta registrada com sucesso!",
       crismando: updatedCrismando.rows[0],
@@ -331,7 +271,7 @@ app.post("/api/faltas", async (req, res) => {
 
 // DELETE /api/faltas - Remover uma falta para um crismando em um encontro específico
 app.post('/api/faltas/remover', async (req, res) => {
-  const { crismando_id, encontros_ids, username } = req.body; // Espera o username para o log
+  const { crismando_id, encontros_ids } = req.body;
 
   if (!crismando_id || !Array.isArray(encontros_ids) || encontros_ids.length === 0) {
     return res.status(400).json({ error: 'crismando_id e um array de encontros_ids são obrigatórios.' });
@@ -353,13 +293,6 @@ app.post('/api/faltas/remover', async (req, res) => {
       'UPDATE crismandos SET faltas = faltas - $1 WHERE id = $2',
       [deleteResult.rows.length, crismando_id]
     );
-
-    // LOG: Buscar nome do crismando para o log
-    const crismandoRes = await db.query("SELECT nome FROM crismandos WHERE id = $1", [crismando_id]);
-    const crismandoNome = crismandoRes.rows[0]?.nome || `ID ${crismando_id}`;
-    const numRemoved = deleteResult.rows.length;
-
-    await logAction(username, 'REMOVE_FALTA', `${numRemoved} falta(s) removida(s) de ${crismandoNome}. Encontros IDs: ${encontros_ids.join(', ')}.`);
 
     res.json({
       message: `${deleteResult.rows.length} falta(s) removida(s) com sucesso!`,
@@ -507,16 +440,12 @@ app.get("/api/encontros/:id", async (req, res) => {
 
 // POST /api/encontros - Adiciona um novo encontro
 app.post("/api/encontros", async (req, res) => {
-  const { data, assunto, local, username } = req.body; // Espera o username para o log
+  const { data, assunto, local } = req.body;
   try {
     const result = await db.query(
       "INSERT INTO encontros (data, assunto, local) VALUES ($1, $2, $3) RETURNING *",
       [data, assunto, local]
     );
-    // LOG
-    const assuntoLimpo = stripHtmlTags(result.rows[0].assunto);
-    await logAction(username, 'ADD_ENCONTRO', `Novo encontro adicionado: '${assuntoLimpo}' em ${new Date(result.rows[0].data).toLocaleDateString('pt-BR')}.`);
-
     res.status(201).json(result.rows[0]);
   } catch (err) {
     console.error(err);
@@ -527,12 +456,8 @@ app.post("/api/encontros", async (req, res) => {
 // PUT /api/encontros/:id - Atualiza um encontro existente
 app.put("/api/encontros/:id", async (req, res) => {
   const { id } = req.params;
-  const { data, assunto, local, username } = req.body; // Espera o username para o log
+  const { data, assunto, local } = req.body;
   try {
-    // Buscar o assunto antigo para o log
-    const oldEncontro = await db.query("SELECT assunto FROM encontros WHERE id = $1", [id]);
-    const oldAssunto = oldEncontro.rows.length > 0 ? stripHtmlTags(oldEncontro.rows[0].assunto) : 'Encontro Desconhecido';
-
     const result = await db.query(
       "UPDATE encontros SET data = $1, assunto = $2, local = $3 WHERE id = $4 RETURNING *",
       [data, assunto, local, id]
@@ -540,10 +465,6 @@ app.put("/api/encontros/:id", async (req, res) => {
     if (result.rows.length === 0) {
       return res.status(404).json({ error: "Encontro não encontrado" });
     }
-    // LOG
-    const novoAssunto = stripHtmlTags(result.rows[0].assunto);
-    await logAction(username, 'EDIT_ENCONTRO', `Encontro ID ${id} alterado. Assunto de '${oldAssunto}' para '${novoAssunto}'.`);
-
     res.json(result.rows[0]);
   } catch (err) {
     console.error(err);
@@ -554,13 +475,7 @@ app.put("/api/encontros/:id", async (req, res) => {
 // DELETE /api/encontros/:id - Deleta um encontro
 app.delete("/api/encontros/:id", async (req, res) => {
   const { id } = req.params;
-  const username = req.query.username || 'crismacapela25'; // Placeholder: Tente buscar do query ou use o valor fixo
-
   try {
-    // Buscar dados do encontro antes de deletar
-    const encontroResult = await db.query("SELECT assunto FROM encontros WHERE id = $1", [id]);
-    const encontroAssunto = encontroResult.rows.length > 0 ? stripHtmlTags(encontroResult.rows[0].assunto) : `ID ${id}`;
-
     // Primeiro, deletar todas as faltas associadas a este encontro
     await db.query("DELETE FROM faltas_crismandos WHERE encontro_id = $1", [
       id,
@@ -573,9 +488,6 @@ app.delete("/api/encontros/:id", async (req, res) => {
     if (result.rows.length === 0) {
       return res.status(404).json({ error: "Encontro não encontrado" });
     }
-    // LOG
-    await logAction(username, 'DELETE_ENCONTRO', `Encontro '${encontroAssunto}' (ID: ${id}) deletado.`);
-
     res.json({
       message: "Encontro e faltas associadas deletados com sucesso!",
     });
@@ -620,8 +532,6 @@ function printFormattedText(
 
 // GET /api/report/pdf - Gera e envia um relatório PDF
 app.get("/api/report/pdf", async (req, res) => {
-  const username = req.query.username || 'crismacapela25';
-
   try {
     // 1. Buscar todos os crismandos e encontros do banco de dados
     const alunosResult = await db.query(
@@ -898,8 +808,6 @@ app.get("/api/report/pdf", async (req, res) => {
 
     // 5. Finalizar o documento PDF
     doc.end();
-
-    await logAction(username, 'GERAR_RELATORIO', `Relatório PDF de crismandos gerado e baixado.`);
   } catch (error) {
     console.error("Erro ao gerar relatório PDF:", error.message);
     res.status(500).json({ error: "Erro ao gerar relatório PDF." });
