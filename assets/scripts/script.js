@@ -314,23 +314,19 @@
         tbody.insertAdjacentHTML(
           "beforeend",
           `
-          <tr data-id="${aluno.id}" class="${linhaClass}">
+          <tr data-crismando-id="${aluno.id}" data-crismando-nome="${aluno.nome}" class="${linhaClass}">
             <td>${aluno.nome}</td>
             <td>
-              <button class="icon diminuir-faltas" data-crismando-id="${aluno.id
-          }" ${aluno.faltas <= 0 ? "disabled" : ""}>-</button>
-              <span class="faltas-valor" ${faltasStyle}>${aluno.faltas
-          }</span> <button class="icon aumentar-faltas" data-crismando-id="${aluno.id
-          }">+</button>
+              <span class="faltas-valor" ${faltasStyle}>${aluno.faltas}</span>
             </td>
             <td>${Math.max(0, presencasCalculadas)}</td>
             <td>
-              <button class="icon view-faltas" data-crismando-id="${aluno.id
-          }">👁️</button>
-              <button class="icon edit-crismando" data-crismando-id="${aluno.id
-          }">✏️</button>
-              <button class="icon del-crismando" data-crismando-id="${aluno.id
-          }">🗑️</button>
+              <button class="icon adicionar-faltas" title="Marcar Falta">+</button>
+              <button class="icon remover-faltas" title="Remover Falta">-</button>
+              
+              <button class="icon view-faltas" data-crismando-id="${aluno.id}">👁️</button>
+              <button class="icon editar-crismando" data-crismando-id="${aluno.id}">✏️</button>
+              <button class="icon apagar-crismando" data-crismando-id="${aluno.id}">🗑️</button>
             </td>
           </tr>
         `
