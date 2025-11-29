@@ -4,8 +4,6 @@
   const body = document.querySelector('body');
   const rotation = document.getElementById('rotation');
 
-  // openEncontroSelectionModal
-
   function ativarRotacao() {
     if (rotation) {
       rotation.style.opacity = '1';
@@ -195,65 +193,12 @@
     let encontros = [];
     let currentCrismandoId = null;
     let currentActionType = null; // 'addFalta' ou 'removeFalta'
-    let currentCrismandoNome = "";
-
-    function openEncontroSelectionModal(listaDeEncontros = encontros) {
-      const modal = $("#encontroSelectionModal");
-      const container = $("#encontrosCheckboxContainer");
-      const titulo = $("#encontroSelectionModalTitle"); // Use $ para buscar o elemento
-
-      // Limpa o container anterior
-      container.innerHTML = "";
-
-      // Atualiza o título baseado na ação
-      if (currentActionType === "addFalta") {
-        titulo.textContent = `Marcar falta para ${currentCrismandoNome}:`;
-      } else if (currentActionType === "removeFalta") {
-        titulo.textContent = `Remover falta(s) de ${currentCrismandoNome}:`;
-      }
-
-      // Desabilita o botão se não houver encontros/faltas para selecionar
-      confirmSelectionBtn.disabled = listaDeEncontros.length === 0;
-
-      if (listaDeEncontros.length === 0) {
-        container.innerHTML = `<p>Nenhum ${currentActionType === "addFalta" ? "encontro" : "falta"} disponível para seleção.</p>`;
-      } else {
-        // Renderiza os Checkboxes (USANDO listaDeEncontros)
-        listaDeEncontros.forEach(encontro => {
-          const label = document.createElement("label");
-          label.classList.add('checkbox-mobile-faltas');
-
-          const checkbox = document.createElement("input");
-          checkbox.type = "checkbox";
-          // O valor do checkbox deve ser o ID do encontro
-          checkbox.value = encontro.id;
-          checkbox.name = "encontroId";
-
-          const dataFormatada = formatDate(encontro.data);
-
-          const span = document.createElement("span");
-          // Verifica se assunto existe e se é uma string antes de tentar o replace
-          const assuntoLimpo = encontro.assunto ? encontro.assunto.replace(/<[^>]*>/g, "") : "Sem Assunto";
-          span.innerHTML = `<strong>${dataFormatada}</strong> - ${assuntoLimpo}`;
-
-          label.appendChild(checkbox);
-          label.appendChild(span);
-          container.appendChild(label);
-        });
-      }
-
-      // Exibir o modal
-      if (modal) {
-        modal.showModal();
-        document.body.classList.add("modal-open");
-      }
-    }
 
     function closeEncontroSelectionModal() {
       // 1. Aplica a transição suave (opacidade e bloqueio de interação)
       encontroSelectionModal.style.opacity = '0';
       encontroSelectionModal.style.pointerEvents = 'none';
-      encontroSelectionModal.style.zIndex = '-1';
+      encontroSelectionModal.style.zIndex = '-1'; 
 
       document.body.classList.remove("modal-open");
       encontroSelectionModal.classList.remove("modal-open");
@@ -294,17 +239,13 @@
 
     // Renderiza a tabela de alunos
     function renderTabelaAlunos() {
-      const tbody = $("#alunosTbody"); // Supondo que 'tbody' é definida aqui ou globalmente como $("#alunosTbody")
-
-      if (!tbody) return;
-
       tbody.innerHTML = ""; // Limpa a tabela
       if (alunos.length === 0) {
         tbody.insertAdjacentHTML(
           "beforeend",
           `
-        <tr><td colspan="4">Nenhum crismando cadastrado.</td></tr>
-      `
+          <tr><td colspan="4">Nenhum crismando cadastrado.</td></tr>
+        `
         );
         return;
       }
@@ -318,22 +259,26 @@
         tbody.insertAdjacentHTML(
           "beforeend",
           `
-        <tr data-crismando-id="${aluno.id}" data-crismando-nome="${aluno.nome}" class="${linhaClass}">
-          <td>${aluno.nome}</td>
-          <td>
-            <span class="faltas-valor" ${faltasStyle}>${aluno.faltas}</span>
-          </td>
-          <td>${Math.max(0, presencasCalculadas)}</td>
-          <td>
-            <button class="icon adicionar-faltas" title="Marcar Falta">➕</button>
-            <button class="icon remover-faltas" title="Remover Falta">➖</button>
-            
-            <button class="icon view-faltas" data-crismando-id="${aluno.id}">👁️</button>
-            <button class="icon editar-crismando" data-crismando-id="${aluno.id}">✏️</button>
-            <button class="icon apagar-crismando" data-crismando-id="${aluno.id}">🗑️</button>
-          </td>
-        </tr>
-      `
+          <tr data-id="${aluno.id}" class="${linhaClass}">
+            <td>${aluno.nome}</td>
+            <td>
+              <button class="icon diminuir-faltas" data-crismando-id="${aluno.id
+          }" ${aluno.faltas <= 0 ? "disabled" : ""}>-</button>
+              <span class="faltas-valor" ${faltasStyle}>${aluno.faltas
+          }</span> <button class="icon aumentar-faltas" data-crismando-id="${aluno.id
+          }">+</button>
+            </td>
+            <td>${Math.max(0, presencasCalculadas)}</td>
+            <td>
+              <button class="icon view-faltas" data-crismando-id="${aluno.id
+          }">👁️</button>
+              <button class="icon edit-crismando" data-crismando-id="${aluno.id
+          }">✏️</button>
+              <button class="icon del-crismando" data-crismando-id="${aluno.id
+          }">🗑️</button>
+            </td>
+          </tr>
+        `
         );
       });
     }
@@ -423,49 +368,6 @@
       }
     }
 
-    async function fetchCrismandoFaltas(crismandoId) {
-      try {
-        // Rota que busca as faltas (exigirá uma rota GET no seu server.js)
-        const response = await fetch(`${API_BASE_URL}/crismandos/${crismandoId}/faltas`);
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(`Falha ao buscar faltas do crismando: ${response.status} - ${errorText}`);
-        }
-        return await response.json(); // Retorna um array de encontros onde o crismando faltou
-      } catch (error) {
-        console.error("Erro ao buscar faltas:", error);
-        // Retorna um array vazio em caso de erro
-        return [];
-      }
-    }
-
-    async function handleRemoveFaltaClick(crismandoId, crismandoNome) {
-      ativarRotacao();
-      currentCrismandoId = crismandoId;
-      currentCrismandoNome = crismandoNome;
-      currentActionType = "removeFalta";
-
-      try {
-        // 1. Busca as faltas existentes
-        console.log(`Buscando faltas do crismando ${crismandoId}...`);
-        const faltasExistentes = await fetchCrismandoFaltas(crismandoId);
-
-        if (faltasExistentes.length === 0) {
-          alert(`O crismando ${crismandoNome} não possui nenhuma falta para remover.`);
-          return;
-        }
-
-        // 2. Abre o modal passando APENAS as faltas existentes
-        openEncontroSelectionModal(faltasExistentes);
-
-      } catch (error) {
-        console.error("Erro em handleRemoveFaltaClick:", error);
-        alert("Erro ao preparar a remoção de faltas. Tente novamente.");
-      } finally {
-        desativarRotacao();
-      }
-    }
-
     // Abre o formulário para adicionar/editar crismando
     btnNovoCrismando.addEventListener("click", () => {
       crismandoForm.reset();
@@ -542,52 +444,64 @@
     });
 
     // Lidar com ações na tabela (aumentar/diminuir faltas, editar, deletar, ver faltas)
-    if (tbody) {
-      tbody.addEventListener("click", async (event) => {
-        const target = event.target;
-        const tr = target.closest("tr"); // Encontra a linha da tabela
+    tbody.addEventListener("click", async (event) => {
+      const target = event.target;
+      const crismandoId = target.dataset.crismandoId;
+      if (!crismandoId) return;
 
-        if (!tr) return; // Sai se o clique não foi em uma linha
+      const crismando = alunos.find((a) => a.id == crismandoId);
+      if (!crismando) return;
 
-        // Lendo dos atributos de dados da linha (data-crismando-id, data-crismando-nome)
-        // ESTES ATRIBUTOS AGORA EXISTEM GRAÇAS À CORREÇÃO 1
-        const crismandoId = tr.dataset.crismandoId;
-        const crismandoNome = tr.dataset.crismandoNome;
+      if (target.classList.contains("aumentar-faltas")) {
+        currentCrismandoId = crismandoId;
+        currentActionType = "addFalta";
 
-        if (!crismandoId || !crismandoNome) {
-          console.error("ID ou Nome do crismando não encontrado na linha da tabela.");
-          return;
+        document.body.classList.add("modal-open");
+        encontroSelectionModal.classList.add("modal-open");
+
+        encontroSelectionModalTitle.textContent =
+          "Adicionar Falta - Selecione o Encontro";
+
+        document.querySelector("#encontroSelectionModal .mdl-p").textContent =
+          "Selecione um encontro";
+
+        await fetchAllEncontrosAndPopulateModal();
+        encontroSelectionModal.style.display = "block"; // CORRIGIDO AQUI
+      } else if (target.classList.contains("diminuir-faltas")) {
+        currentCrismandoId = crismandoId;
+        currentActionType = "removeFalta";
+
+        document.body.classList.add("modal-open");
+        encontroSelectionModal.classList.add("modal-open");
+
+        encontroSelectionModalTitle.textContent =
+          "Selecione a Falta para Remover"; // Título para remoção
+
+        document.querySelector("#encontroSelectionModal .mdl-p").textContent =
+          "Selecione uma ou mais faltas para remover:";
+
+        await fetchFaltasDoCrismandoAndPopulateModal(crismandoId); // Mostra SOMENTE as faltas do crismando
+        encontroSelectionModal.style.display = "block";
+      } else if (target.classList.contains("view-faltas")) {
+        currentCrismandoId = crismandoId;
+        // Linha removida: toggleFaltasCountVisibility(crismandoId, true);
+        await displayFaltasDetails(crismandoId, crismando.nome);
+      } else if (target.classList.contains("edit-crismando")) {
+        crismandoFormTitulo.textContent = "Editar Crismando";
+        crismandoForm.dataset.id = crismando.id;
+        nomeCrismandoInput.value = crismando.nome;
+
+        crismandoDialog.showModal();
+      } else if (target.classList.contains("del-crismando")) {
+        if (
+          confirm(
+            `Tem certeza que deseja deletar o crismando ${crismando.nome}?`
+          )
+        ) {
+          await deleteCrismando(crismandoId);
         }
-
-        // Ação para Adicionar Falta
-        if (target.classList.contains("adicionar-faltas")) {
-          ativarRotacao();
-          currentCrismandoId = crismandoId; // Variáveis globais
-          currentCrismandoNome = crismandoNome; // Variáveis globais
-          currentActionType = "addFalta";
-
-          openEncontroSelectionModal();
-          desativarRotacao();
-
-          // Ação para Remover Falta
-        } else if (target.classList.contains("remover-faltas")) {
-          // Chama a função que define os globals e abre o modal,
-          // usando as variáveis lidas acima.
-          handleRemoveFaltaClick(crismandoId, crismandoNome);
-
-          // Ação para Editar Crismando
-        } else if (target.classList.contains("editar-crismando")) {
-          const crismando = alunos.find(c => c.id === parseInt(crismandoId));
-          if (crismando) {
-            openCrismandoModal(crismando);
-          }
-        } else if (target.classList.contains("apagar-crismando")) {
-          if (confirm(`Tem certeza que deseja apagar o crismando ${crismandoNome}?`)) {
-            await deleteCrismando(crismandoId, crismandoNome);
-          }
-        }
-      });
-    }
+      }
+    });
 
     // Fechar modal de seleção de encontros
     closeEncontroSelectionButton.addEventListener("click", () => {
@@ -660,26 +574,49 @@
           desativarRotacao();
         }
       } else if (currentActionType === "removeFalta") {
-        url = `${API_BASE_URL}/faltas/remover`;
-        method = "POST";
+        const selectedCheckboxes = $$('input[name="encontro"]:checked');
+        const encontrosIds = selectedCheckboxes.map((cb) => parseInt(cb.value));
 
-        const response = await fetch(url, {
-          method: method,
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            crismando_id: currentCrismandoId, // Variável global agora declarada
-            encontros_ids: encontrosIds,
-            username: username
-          }),
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.error || "Erro desconhecido ao remover falta(s).");
+        if (encontrosIds.length === 0) {
+          alert(
+            "Por favor, selecione pelo menos um encontro para retirar a falta."
+          );
+          return;
         }
-        // CORREÇÃO DO ERRO: Usando a variável global currentCrismandoNome
-        successMessage = `Foram removidas ${data.removed_faltas.length} falta(s) de ${currentCrismandoNome}.`;
+
+        ativarRotacao();
+        try {
+          // ALTERAÇÃO CRUCIAL: Mudar o método para 'POST' e a URL para a nova rota
+          const response = await fetch(`${API_BASE_URL}/faltas/remover`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              crismando_id: parseInt(currentCrismandoId),
+              encontros_ids: encontrosIds,
+            }),
+          });
+
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(
+              errorData.error || `Erro ao retirar falta: ${response.status}`
+            );
+          }
+
+          alert(
+            `${encontrosIds.length} falta(s) removida(s) com sucesso para ${crismando.nome}!`
+          );
+          // encontroSelectionModal.style.display = "none";
+          closeEncontroSelectionModal();
+          fetchAndRenderData();
+        } catch (error) {
+          console.error("Erro ao retirar falta:", error);
+          alert(`Erro ao retirar falta: ${error.message}`);
+        } finally {
+          desativarRotacao();
+        }
       }
     });
 
@@ -1139,59 +1076,6 @@
     }
 
     fetchAndRenderEncontros();
-  }
-
-  async function fetchAndRenderLogs() {
-    // 1. Ativa o spinner de rotação
-    ativarRotacao();
-
-    try {
-      const response = await fetch(`${API_BASE_URL}/logs`);
-      if (!response.ok) {
-        throw new Error("Falha ao carregar logs.");
-      }
-      const logs = await response.json();
-      const logsTbody = document.getElementById("logsTbody");
-      logsTbody.innerHTML = ""; // Limpa a tabela
-
-      logs.forEach((log) => {
-        const row = logsTbody.insertRow();
-        // Formata a data/hora para exibição
-        const formattedDate = new Date(log.timestamp).toLocaleString("pt-BR", {
-          day: "2-digit",
-          month: "2-digit",
-          year: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-        });
-
-        row.insertCell().textContent = formattedDate;
-        row.insertCell().textContent = log.username;
-        row.insertCell().textContent = log.action_type;
-        row.insertCell().textContent = log.details;
-      });
-    } catch (error) {
-      console.error("Erro ao renderizar logs:", error);
-    } finally {
-      // 2. Desativa o spinner
-      desativarRotacao();
-    }
-  }
-
-  async function logAction(username, actionType, details) {
-    try {
-      await pool.query(
-        "INSERT INTO logs (username, action_type, details) VALUES ($1, $2, $3)",
-        [username, actionType, details]
-      );
-    } catch (error) {
-      console.error("Erro ao registrar log:", error.message);
-    }
-  }
-
-  if (window.location.pathname.includes("logger.html")) {
-    fetchAndRenderLogs();
   }
 
   // --- Lógica para o tema persistente ---
