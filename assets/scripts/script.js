@@ -542,65 +542,54 @@
     });
 
     // Lidar com ações na tabela (aumentar/diminuir faltas, editar, deletar, ver faltas)
-    tbody.addEventListener("click", async (event) => {
-      const target = event.target;
-      const crismandoId = target.dataset.crismandoId;
-      if (!crismandoId) return;
+    if (tbody) {
+      tbody.addEventListener("click", async (event) => {
+        const target = event.target;
+        const tr = target.closest("tr"); // Encontra a linha da tabela
 
-      const crismando = alunos.find((a) => a.id == crismandoId);
-      if (!crismando) return;
+        if (!tr) return; // Sai se o clique não foi em uma linha
 
-      if (target.classList.contains("aumentar-faltas")) {
-        currentCrismandoId = crismandoId;
-        currentActionType = "addFalta";
+        // CORREÇÃO: Define as variáveis LOCAIS (crismandoId e crismandoNome)
+        // Lendo dos atributos de dados da linha (data-crismando-id, data-crismando-nome)
+        const crismandoId = tr.dataset.crismandoId;
+        const crismandoNome = tr.dataset.crismandoNome;
 
-        document.body.classList.add("modal-open");
-        encontroSelectionModal.classList.add("modal-open");
-
-        encontroSelectionModalTitle.textContent =
-          "Adicionar Falta - Selecione o Encontro";
-
-        document.querySelector("#encontroSelectionModal .mdl-p").textContent =
-          "Selecione um encontro";
-
-        await fetchAllEncontrosAndPopulateModal();
-        encontroSelectionModal.style.display = "block"; // CORRIGIDO AQUI
-      } else if (target.classList.contains("diminuir-faltas")) {
-        // currentCrismandoId = crismandoId;
-        // currentActionType = "removeFalta";
-
-        // document.body.classList.add("modal-open");
-        // encontroSelectionModal.classList.add("modal-open");
-
-        // encontroSelectionModalTitle.textContent =
-        //   "Selecione a Falta para Remover"; // Título para remoção
-
-        // document.querySelector("#encontroSelectionModal .mdl-p").textContent =
-        //   "Selecione uma ou mais faltas para remover:";
-
-        // await fetchFaltasDoCrismandoAndPopulateModal(crismandoId); // Mostra SOMENTE as faltas do crismando
-        // encontroSelectionModal.style.display = "block";
-        handleRemoveFaltaClick(crismandoId, crismandoNome);
-      } else if (target.classList.contains("view-faltas")) {
-        currentCrismandoId = crismandoId;
-        // Linha removida: toggleFaltasCountVisibility(crismandoId, true);
-        await displayFaltasDetails(crismandoId, crismando.nome);
-      } else if (target.classList.contains("edit-crismando")) {
-        crismandoFormTitulo.textContent = "Editar Crismando";
-        crismandoForm.dataset.id = crismando.id;
-        nomeCrismandoInput.value = crismando.nome;
-
-        crismandoDialog.showModal();
-      } else if (target.classList.contains("del-crismando")) {
-        if (
-          confirm(
-            `Tem certeza que deseja deletar o crismando ${crismando.nome}?`
-          )
-        ) {
-          await deleteCrismando(crismandoId);
+        if (!crismandoId || !crismandoNome) {
+          console.error("ID ou Nome do crismando não encontrado na linha da tabela.");
+          return;
         }
-      }
-    });
+
+        // Ação para Adicionar Falta
+        if (target.classList.contains("adicionar-faltas")) {
+          ativarRotacao();
+          currentCrismandoId = crismandoId; // Variáveis globais (let)
+          currentCrismandoNome = crismandoNome; // Variáveis globais (let)
+          currentActionType = "addFalta";
+
+          // openEncontroSelectionModal usa a lista de encontros (global) por padrão
+          openEncontroSelectionModal();
+          desativarRotacao();
+
+          // Ação para Remover Falta
+        } else if (target.classList.contains("remover-faltas")) {
+          // Chama a nova função que define os globals e abre o modal.
+          handleRemoveFaltaClick(crismandoId, crismandoNome);
+
+          // Ação para Editar Crismando
+        } else if (target.classList.contains("editar-crismando")) {
+          // ... (Seu código de edição)
+          const crismando = crismandos.find(c => c.id === parseInt(crismandoId));
+          if (crismando) {
+            openCrismandoModal(crismando);
+          }
+        } else if (target.classList.contains("apagar-crismando")) {
+          // ... (Seu código de exclusão)
+          if (confirm(`Tem certeza que deseja apagar o crismando ${crismandoNome}?`)) {
+            await deleteCrismando(crismandoId, crismandoNome);
+          }
+        }
+      });
+    }
 
     // Fechar modal de seleção de encontros
     closeEncontroSelectionButton.addEventListener("click", () => {
