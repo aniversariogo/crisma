@@ -294,13 +294,17 @@
 
     // Renderiza a tabela de alunos
     function renderTabelaAlunos() {
+      const tbody = $("#alunosTbody"); // Supondo que 'tbody' é definida aqui ou globalmente como $("#alunosTbody")
+
+      if (!tbody) return;
+
       tbody.innerHTML = ""; // Limpa a tabela
       if (alunos.length === 0) {
         tbody.insertAdjacentHTML(
           "beforeend",
           `
-          <tr><td colspan="4">Nenhum crismando cadastrado.</td></tr>
-        `
+        <tr><td colspan="4">Nenhum crismando cadastrado.</td></tr>
+      `
         );
         return;
       }
@@ -314,22 +318,22 @@
         tbody.insertAdjacentHTML(
           "beforeend",
           `
-          <tr data-crismando-id="${aluno.id}" data-crismando-nome="${aluno.nome}" class="${linhaClass}">
-            <td>${aluno.nome}</td>
-            <td>
-              <span class="faltas-valor" ${faltasStyle}>${aluno.faltas}</span>
-            </td>
-            <td>${Math.max(0, presencasCalculadas)}</td>
-            <td>
-              <button class="icon adicionar-faltas" title="Marcar Falta">+</button>
-              <button class="icon remover-faltas" title="Remover Falta">-</button>
-              
-              <button class="icon view-faltas" data-crismando-id="${aluno.id}">👁️</button>
-              <button class="icon editar-crismando" data-crismando-id="${aluno.id}">✏️</button>
-              <button class="icon apagar-crismando" data-crismando-id="${aluno.id}">🗑️</button>
-            </td>
-          </tr>
-        `
+        <tr data-crismando-id="${aluno.id}" data-crismando-nome="${aluno.nome}" class="${linhaClass}">
+          <td>${aluno.nome}</td>
+          <td>
+            <span class="faltas-valor" ${faltasStyle}>${aluno.faltas}</span>
+          </td>
+          <td>${Math.max(0, presencasCalculadas)}</td>
+          <td>
+            <button class="icon adicionar-faltas" title="Marcar Falta">➕</button>
+            <button class="icon remover-faltas" title="Remover Falta">➖</button>
+            
+            <button class="icon view-faltas" data-crismando-id="${aluno.id}">👁️</button>
+            <button class="icon editar-crismando" data-crismando-id="${aluno.id}">✏️</button>
+            <button class="icon apagar-crismando" data-crismando-id="${aluno.id}">🗑️</button>
+          </td>
+        </tr>
+      `
         );
       });
     }
@@ -545,8 +549,8 @@
 
         if (!tr) return; // Sai se o clique não foi em uma linha
 
-        // CORREÇÃO: Define as variáveis LOCAIS (crismandoId e crismandoNome)
         // Lendo dos atributos de dados da linha (data-crismando-id, data-crismando-nome)
+        // ESTES ATRIBUTOS AGORA EXISTEM GRAÇAS À CORREÇÃO 1
         const crismandoId = tr.dataset.crismandoId;
         const crismandoNome = tr.dataset.crismandoNome;
 
@@ -558,28 +562,26 @@
         // Ação para Adicionar Falta
         if (target.classList.contains("adicionar-faltas")) {
           ativarRotacao();
-          currentCrismandoId = crismandoId; // Variáveis globais (let)
-          currentCrismandoNome = crismandoNome; // Variáveis globais (let)
+          currentCrismandoId = crismandoId; // Variáveis globais
+          currentCrismandoNome = crismandoNome; // Variáveis globais
           currentActionType = "addFalta";
 
-          // openEncontroSelectionModal usa a lista de encontros (global) por padrão
           openEncontroSelectionModal();
           desativarRotacao();
 
           // Ação para Remover Falta
         } else if (target.classList.contains("remover-faltas")) {
-          // Chama a nova função que define os globals e abre o modal.
+          // Chama a função que define os globals e abre o modal,
+          // usando as variáveis lidas acima.
           handleRemoveFaltaClick(crismandoId, crismandoNome);
 
           // Ação para Editar Crismando
         } else if (target.classList.contains("editar-crismando")) {
-          // ... (Seu código de edição)
-          const crismando = crismandos.find(c => c.id === parseInt(crismandoId));
+          const crismando = alunos.find(c => c.id === parseInt(crismandoId));
           if (crismando) {
             openCrismandoModal(crismando);
           }
         } else if (target.classList.contains("apagar-crismando")) {
-          // ... (Seu código de exclusão)
           if (confirm(`Tem certeza que deseja apagar o crismando ${crismandoNome}?`)) {
             await deleteCrismando(crismandoId, crismandoNome);
           }
